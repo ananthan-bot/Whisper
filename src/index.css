@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased selection:bg-primary-50 selection:text-primary-600;
+  }
+}
