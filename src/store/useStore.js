@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { generateAlias } from '../lib/utils';
+import { MOCK_TASKS } from './mockTasks';
 
 export const useStore = create(
   persist(
     (set) => ({
       // ─── Tasks ───────────────────────────────────────────────────────────
-      tasks: [],
+      tasks: MOCK_TASKS,
+
       addTask: (task) =>
         set((state) => {
           const newTask = {
