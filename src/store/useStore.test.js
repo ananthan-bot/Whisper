@@ -202,3 +202,101 @@ test('acceptTask — does not change proof data', () => {
   const task = state.tasks.find((t) => t.id === 'TASK-D');
   assert.equal(task.proof, 'my proof');
 });
+
+// ─── addMessage ───────────────────────────────────────────────────────────────
+
+test('addMessage — appends message to messages array', () => {
+  let state = initialState();
+  state = actions.addMessage(state, 'TASK-1', 'requester', 'I need help please');
+  assert.equal(state.messages.length, 1);
+  assert.equal(state.messages[0].text, 'I need help please');
+});
+
+test('addMessage — records taskId, sender, and text correctly', () => {
+  let state = initialState();
+  state = actions.addMessage(state, 'TASK-42', 'helper', 'On it!');
+  const msg = state.messages[0];
+  assert.equal(msg.taskId, 'TASK-42');
+  assert.equal(msg.sender, 'helper');
+  assert.equal(msg.text, 'On it!');
+});
+
+test('addMessage — includes a timestamp', () => {
+  let state = initialState();
+  state = actions.addMessage(state, 'TASK-1', 'requester', 'Hello');
+  assert.ok(state.messages[0].timestamp);
+  assert.doesNotThrow(() => new Date(state.messages[0].timestamp));
+});
+
+test('addMessage — accumulates multiple messages in order', () => {
+  let state = initialState();
+  state = actions.addMessage(state, 'TASK-1', 'requester', 'First message');
+  state = actions.addMessage(state, 'TASK-1', 'helper',    'Second message');
+  state = actions.addMessage(state, 'TASK-1', 'requester', 'Third message');
+  assert.equal(state.messages.length, 3);
+  assert.equal(state.messages[0].text, 'First message');
+  assert.equal(state.messages[2].text, 'Third message');
+});
+
+test('addMessage — messages from different tasks coexist', () => {
+  let state = initialState();
+  state = actions.addMessage(state, 'TASK-A', 'requester', 'Message for A');
+  state = actions.addMessage(state, 'TASK-B', 'helper',    'Message for B');
+  assert.equal(state.messages.filter((m) => m.taskId === 'TASK-A').length, 1);
+  assert.equal(state.messages.filter((m) => m.taskId === 'TASK-B').length, 1);
+});
+
+// ─── rateTask ─────────────────────────────────────────────────────────────────
+
+test('rateTask — stores rating for a task', () => {
+  let state = initialState();
+  state = actions.rateTask(state, 'TASK-1', 5);
+  assert.equal(state.ratings['TASK-1'], 5);
+});
+
+test('rateTask — stores different ratings for different tasks', () => {
+  let state = initialState();
+  state = actions.rateTask(state, 'TASK-A', 3);
+  state = actions.rateTask(state, 'TASK-B', 5);
+  assert.equal(state.ratings['TASK-A'], 3);
+  assert.equal(state.ratings['TASK-B'], 5);
+});
+
+test('rateTask — overwrites previous rating for the same task', () => {
+  let state = initialState();
+  state = actions.rateTask(state, 'TASK-1', 2);
+  state = actions.rateTask(state, 'TASK-1', 4);
+  assert.equal(state.ratings['TASK-1'], 4);
+});
+
+test('rateTask — does not mutate other ratings', () => {
+  let state = initialState();
+  state = actions.rateTask(state, 'TASK-A', 5);
+  state = actions.rateTask(state, 'TASK-B', 1);
+  assert.equal(state.ratings['TASK-A'], 5);
+});
+
+// ─── setViewMode ──────────────────────────────────────────────────────────────
+
+test('setViewMode — switches to "helper" mode', () => {
+  let state = initialState();
+  state = actions.setViewMode(state, 'helper');
+  assert.equal(state.viewMode, 'helper');
+});
+
+test('setViewMode — switches back to "requester" mode', () => {
+  let state = initialState();
+  state = actions.setViewMode(state, 'helper');
+  state = actions.setViewMode(state, 'requester');
+  assert.equal(state.viewMode, 'requester');
+});
+
+test('setViewMode — does not affect tasks or messages', () => {
+  let state = initialState();
+  state = actions.addTask(state, { id: 'TASK-X', category: 'negotiator', description: 'Test task here' });
+  state = actions.addMessage(state, 'TASK-X', 'requester', 'Hello world');
+  state = actions.setViewMode(state, 'helper');
+  assert.equal(state.tasks.length, 1);
+  assert.equal(state.messages.length, 1);
+});
+
