@@ -105,3 +105,132 @@ Custom Tailwind tokens:
 ## 📄 License
 
 MIT
+
+---
+
+## 🗄️ Backend API Reference
+
+The Express server runs on **http://localhost:5000** and exposes a REST API backed by PostgreSQL (via Neon).
+
+### Authentication — `/api/auth`
+
+| Method | Endpoint       | Auth | Description                               |
+|--------|----------------|------|-------------------------------------------|
+| POST   | `/signup`      | —    | Create account (`email`, `password`, `alias`). Password ≥ 6 chars. |
+| POST   | `/login`       | —    | Authenticate and receive JWT token.       |
+
+All protected routes require `Authorization: Bearer <token>`.
+
+### Tasks — `/api/tasks`
+
+| Method | Endpoint           | Auth | Description                                          |
+|--------|--------------------|------|------------------------------------------------------|
+| GET    | `/`                | —    | Retrieve all tasks (newest first).                   |
+| GET    | `/:id`             | —    | Retrieve a single task by ID.                        |
+| POST   | `/`                | ✅   | Create task (`category`, `description`, `proof_type`, `alias`, `script`). |
+| PATCH  | `/:id/claim`       | ✅   | Claim an open task. Rejects non-open tasks (409).    |
+| PATCH  | `/:id/proof`       | ✅   | Submit proof on a claimed task. Rejects otherwise.   |
+| PATCH  | `/:id/accept`      | ✅   | Accept a completed task. Rejects otherwise.          |
+
+**Valid categories:** `negotiator`, `secretary`, `researcher`, `wordsmith`  
+**Valid proof types:** `screenshot`, `summary`, `transcript`
+
+### Messages — `/api/messages`
+
+| Method | Endpoint       | Auth | Description                                   |
+|--------|----------------|------|-----------------------------------------------|
+| GET    | `/:taskId`     | ✅   | Retrieve all messages for a task (chronological). |
+| POST   | `/`            | ✅   | Send a message (`task_id`, `sender_role`, `text`). |
+
+### Ratings — `/api/ratings`
+
+| Method | Endpoint             | Auth | Description                                 |
+|--------|----------------------|------|---------------------------------------------|
+| POST   | `/`                  | ✅   | Submit a rating (`task_id`, `helper_id`, `rating` 1-5, `review`). |
+| GET    | `/helper/:helperId`  | —    | Get average rating and total count for a helper. |
+
+---
+
+## 🧪 Running Tests
+
+The project uses Node's built-in test runner — **no external test framework required**.
+
+### Frontend Tests
+
+```bash
+# From project root
+
+# All utils helpers (formatRelativeTime, truncate, generateAlias)
+node --test src/lib/utils.test.js
+
+# Class-merging cn() helper
+node --test src/lib/cn.test.js
+
+# Zustand store action logic (tasks, messages, ratings, viewMode)
+node --test src/store/useStore.test.js
+
+# Run all frontend tests at once
+node --test src/lib/utils.test.js src/lib/cn.test.js src/store/useStore.test.js
+```
+
+### Backend Tests
+
+```bash
+# From project root
+
+# JWT auth middleware (valid, expired, wrong secret, missing token)
+node --test server/tests/auth.test.js
+
+# Auth route logic (signup + login validation)
+node --test server/tests/routes/auth.test.js
+
+# Task CRUD + state transition handlers
+node --test server/tests/routes/tasks.test.js
+
+# Message route handlers
+node --test server/tests/routes/messages.test.js
+
+# Ratings route handlers
+node --test server/tests/routes/ratings.test.js
+
+# Run all backend tests at once
+node --test server/tests/auth.test.js server/tests/routes/auth.test.js server/tests/routes/tasks.test.js server/tests/routes/messages.test.js server/tests/routes/ratings.test.js
+```
+
+### Test Coverage Summary
+
+| Suite                         | Tests |
+|-------------------------------|-------|
+| `utils.test.js`               | 18    |
+| `cn.test.js`                  | 12    |
+| `useStore.test.js`            | 26    |
+| `server/tests/auth.test.js`   | 5     |
+| `routes/auth.test.js`         | 10    |
+| `routes/tasks.test.js`        | 17    |
+| `routes/messages.test.js`     | 8     |
+| `routes/ratings.test.js`      | 11    |
+| **Total**                     | **107** |
+
+---
+
+## 🗃️ Database Schema
+
+```sql
+users       (id, alias, email, password, created_at)
+tasks       (id, user_id, category, description, script, proof_type, alias, status, proof, helper_id, created_at)
+messages    (id, task_id, sender_id, sender_role, text, created_at)
+ratings     (id, task_id, helper_id, rating, review, created_at)
+```
+
+To initialise the schema on a fresh database:
+
+```bash
+cd server
+node db/init.js
+```
+
+---
+
+## 📄 License
+
+MIT
