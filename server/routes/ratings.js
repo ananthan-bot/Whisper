@@ -1,14 +1,17 @@
 const router = require('express').Router();
-const pool = require('../db');
 const auth = require('../middleware/auth');
+const { createRating, getHelperRatingSummary } = require('../db/queries');
 
 router.post('/', auth, async (req, res) => {
   const { task_id, helper_id, rating, review } = req.body;
+  if (!task_id || !helper_id) {
+    return res.status(400).json({ error: 'task_id and helper_id are required' });
+  }
+  if (!rating || typeof rating !== 'number' || rating < 1 || rating > 5) {
+    return res.status(400).json({ error: 'rating must be an integer between 1 and 5' });
+  }
   try {
-    const result = await pool.query(
-      'INSERT INTO ratings (task_id, helper_id, rating, review) VALUES ($1, $2, $3, $4) RETURNING *',
-      [task_id, helper_id, rating, review]
-    );
+    const result = await createRating(task_id, helper_id, rating, review);
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
@@ -17,10 +20,7 @@ router.post('/', auth, async (req, res) => {
 
 router.get('/helper/:helperId', async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT AVG(rating) as average, COUNT(*) as total FROM ratings WHERE helper_id = $1',
-      [req.params.helperId]
-    );
+    const result = await getHelperRatingSummary(req.params.helperId);
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
