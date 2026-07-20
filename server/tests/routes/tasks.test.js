@@ -1,6 +1,7 @@
 /**
  * tests/routes/tasks.test.js
- * Unit tests for task CRUD and status-transition handlers.
+ * Unit tests for task CRUD, validation, and status-transition handlers.
+ * Covers: GET /, GET /:id, POST /, PATCH /:id/claim, PATCH /:id/proof, PATCH /:id/accept
  *
  * Run with:  node --test server/tests/routes/tasks.test.js
  */
