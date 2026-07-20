@@ -21,13 +21,27 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+const VALID_CATEGORIES = ['negotiator', 'secretary', 'researcher', 'wordsmith'];
+const VALID_PROOF_TYPES = ['screenshot', 'summary', 'transcript'];
+
 router.post('/', auth, async (req, res) => {
   const { category, description, script, proof_type, alias } = req.body;
+
+  if (!category || !VALID_CATEGORIES.includes(category)) {
+    return res.status(400).json({ error: `category must be one of: ${VALID_CATEGORIES.join(', ')}` });
+  }
+  if (!description || typeof description !== 'string' || description.trim().length < 10) {
+    return res.status(400).json({ error: 'description must be at least 10 characters long' });
+  }
+  if (proof_type && !VALID_PROOF_TYPES.includes(proof_type)) {
+    return res.status(400).json({ error: `proof_type must be one of: ${VALID_PROOF_TYPES.join(', ')}` });
+  }
+
   const id = `TASK-${Math.floor(1000 + Math.random() * 9000)}`;
   try {
     const result = await pool.query(
       'INSERT INTO tasks (id, user_id, category, description, script, proof_type, alias) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-      [id, req.user.id, category, description, script, proof_type, alias]
+      [id, req.user.id, category, description, script, proof_type || 'screenshot', alias]
     );
     res.json(result.rows[0]);
   } catch (err) {
