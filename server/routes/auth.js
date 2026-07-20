@@ -6,6 +6,17 @@ const pool = require('../db');
 // Signup
 router.post('/signup', async (req, res) => {
   const { email, password, alias } = req.body;
+
+  if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
+  if (!password || typeof password !== 'string' || password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+  }
+  if (!alias || typeof alias !== 'string' || alias.trim().length === 0) {
+    return res.status(400).json({ error: 'Alias is required' });
+  }
+
   try {
     const hashed = await bcrypt.hash(password, 10);
     const result = await pool.query(
@@ -23,6 +34,14 @@ router.post('/signup', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
+  if (!password || typeof password !== 'string' || password.length === 0) {
+    return res.status(400).json({ error: 'Password is required' });
+  }
+
   try {
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     const user = result.rows[0];
