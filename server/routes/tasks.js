@@ -51,6 +51,11 @@ router.post('/', auth, async (req, res) => {
 
 router.patch('/:id/claim', auth, async (req, res) => {
   try {
+    const check = await pool.query('SELECT status FROM tasks WHERE id = $1', [req.params.id]);
+    if (!check.rows[0]) return res.status(404).json({ error: 'Task not found' });
+    if (check.rows[0].status !== 'open') {
+      return res.status(409).json({ error: 'Only open tasks can be claimed' });
+    }
     const result = await pool.query(
       'UPDATE tasks SET status = $1, helper_id = $2 WHERE id = $3 RETURNING *',
       ['claimed', req.user.id, req.params.id]
@@ -63,7 +68,15 @@ router.patch('/:id/claim', auth, async (req, res) => {
 
 router.patch('/:id/proof', auth, async (req, res) => {
   const { proof } = req.body;
+  if (!proof || typeof proof !== 'string' || proof.trim().length === 0) {
+    return res.status(400).json({ error: 'proof content is required' });
+  }
   try {
+    const check = await pool.query('SELECT status FROM tasks WHERE id = $1', [req.params.id]);
+    if (!check.rows[0]) return res.status(404).json({ error: 'Task not found' });
+    if (check.rows[0].status !== 'claimed') {
+      return res.status(409).json({ error: 'Proof can only be submitted for claimed tasks' });
+    }
     const result = await pool.query(
       'UPDATE tasks SET status = $1, proof = $2 WHERE id = $3 RETURNING *',
       ['completed', proof, req.params.id]
@@ -76,6 +89,11 @@ router.patch('/:id/proof', auth, async (req, res) => {
 
 router.patch('/:id/accept', auth, async (req, res) => {
   try {
+    const check = await pool.query('SELECT status FROM tasks WHERE id = $1', [req.params.id]);
+    if (!check.rows[0]) return res.status(404).json({ error: 'Task not found' });
+    if (check.rows[0].status !== 'completed') {
+      return res.status(409).json({ error: 'Only completed tasks can be accepted' });
+    }
     const result = await pool.query(
       'UPDATE tasks SET status = $1 WHERE id = $2 RETURNING *',
       ['accepted', req.params.id]
