@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { categories } from './Landing';
+import { categories } from '../lib/categories';
 import StepIndicator from '../components/StepIndicator';
 import { cn } from '../lib/cn';
 import { generateAlias } from '../lib/utils';

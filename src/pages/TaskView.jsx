@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { ShieldAlert, CheckCircle, Send } from 'lucide-react';
-import { categories } from './Landing';
+import { categories } from '../lib/categories';
 import { motion, AnimatePresence } from 'framer-motion';
 import RatingWidget from '../components/RatingWidget';
 import { formatRelativeTime } from '../lib/utils';

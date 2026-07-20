@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
-import { categories } from './Landing';
+import { categories } from '../lib/categories';
 import { motion, AnimatePresence } from 'framer-motion';
 import TaskCard from '../components/TaskCard';
 import EmptyState from '../components/EmptyState';

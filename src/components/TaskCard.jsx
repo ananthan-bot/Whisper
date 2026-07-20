@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/cn';
 import { formatRelativeTime } from '../lib/utils';
-import { categories } from '../pages/Landing';
+import { categories } from '../lib/categories';
 
 const STATUS_STYLES = {
   open:      { dot: 'bg-slate-400',    badge: 'bg-slate-100 text-slate-600 border-slate-200',  label: 'Open' },
