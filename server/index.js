@@ -19,13 +19,19 @@ app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/messages', require('./routes/messages'));
 app.use('/api/ratings', require('./routes/ratings'));
 
-// Socket.io — real-time chat
+// Socket.io — real-time chat & typing status
 io.on('connection', (socket) => {
   socket.on('join_task', (taskId) => {
     socket.join(taskId);
   });
   socket.on('send_message', (data) => {
     io.to(data.taskId).emit('receive_message', data);
+  });
+  socket.on('typing_start', (data) => {
+    socket.to(data.taskId).emit('user_typing', { senderRole: data.senderRole, isTyping: true });
+  });
+  socket.on('typing_stop', (data) => {
+    socket.to(data.taskId).emit('user_typing', { senderRole: data.senderRole, isTyping: false });
   });
 });
 
