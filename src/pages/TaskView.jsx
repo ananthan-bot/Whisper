@@ -12,10 +12,13 @@ import AudioRecorder from '../components/AudioRecorder';
 import { validateFile, fileToDataUrl } from '../lib/fileHelpers';
 import { useToast } from '../context/ToastContext';
 
+import AuthModal from '../components/AuthModal';
+
 export default function TaskView() {
   const { id } = useParams();
-  const { tasks, claimTask, messages, addMessage, viewMode, submitProof, acceptTask, ratings } = useStore();
+  const { tasks, claimTask, messages, addMessage, viewMode, submitProof, acceptTask, ratings, user } = useStore();
   const { addToast } = useToast();
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const task = tasks.find((t) => t.id === id);
   const taskMessages = messages.filter((m) => m.taskId === id);
 
@@ -39,6 +42,11 @@ export default function TaskView() {
 
   const isRequester = viewMode === 'requester';
   const handleClaim = () => {
+    if (!user) {
+      setIsAuthOpen(true);
+      addToast('Please sign in to claim tasks.', 'info');
+      return;
+    }
     claimTask(task.id);
     addToast('Task claimed! You can now chat securely.', 'success');
   };
@@ -377,6 +385,8 @@ export default function TaskView() {
           <p className="text-sm max-w-sm">The secure, anonymous chat opens once a helper picks up this task.</p>
         </div>
       )}
+
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </div>
   );
 }
