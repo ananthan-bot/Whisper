@@ -10,10 +10,12 @@ import { cn } from '../lib/cn';
 
 import AudioRecorder from '../components/AudioRecorder';
 import { validateFile, fileToDataUrl } from '../lib/fileHelpers';
+import { useToast } from '../context/ToastContext';
 
 export default function TaskView() {
   const { id } = useParams();
   const { tasks, claimTask, messages, addMessage, viewMode, submitProof, acceptTask, ratings } = useStore();
+  const { addToast } = useToast();
   const task = tasks.find((t) => t.id === id);
   const taskMessages = messages.filter((m) => m.taskId === id);
 
@@ -36,7 +38,10 @@ export default function TaskView() {
   );
 
   const isRequester = viewMode === 'requester';
-  const handleClaim = () => claimTask(task.id);
+  const handleClaim = () => {
+    claimTask(task.id);
+    addToast('Task claimed! You can now chat securely.', 'success');
+  };
 
   const handleSend = () => {
     if (!chatInput.trim()) return;
@@ -53,6 +58,12 @@ export default function TaskView() {
     setProofInput('');
     setAudioProof(null);
     setImageProof(null);
+    addToast('Proof submitted successfully!', 'success');
+  };
+
+  const handleAcceptTask = () => {
+    acceptTask(task.id);
+    addToast('Task accepted and completed! Thank you.', 'success');
   };
 
   const isCompleted = task.status === 'completed';
@@ -232,7 +243,7 @@ export default function TaskView() {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.97 }}
-                      onClick={() => acceptTask(task.id)}
+                      onClick={handleAcceptTask}
                       className="w-full py-3 bg-primary-600 text-white rounded-full text-sm font-semibold hover:bg-primary-500 flex justify-center items-center gap-2 shadow-soft transition-colors"
                     >
                       <CheckCircle className="w-4 h-4" /> Accept & Complete

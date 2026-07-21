@@ -8,11 +8,14 @@ import StepIndicator from '../components/StepIndicator';
 import { cn } from '../lib/cn';
 import { generateAlias } from '../lib/utils';
 
+import { useToast } from '../context/ToastContext';
+
 const STEP_LABELS = ['Category', 'Describe', 'Script', 'Proof', 'Alias'];
 
 export default function PostTask() {
   const navigate     = useNavigate();
   const addTask      = useStore((state) => state.addTask);
+  const { addToast } = useToast();
   const [searchParams] = useSearchParams();
 
   const [step, setStep]       = useState(1);
@@ -58,6 +61,7 @@ export default function PostTask() {
   const handleSubmit = (e) => {
     e.preventDefault();
     addTask(formData);
+    addToast('Task created successfully!', 'success');
     navigate('/helper');
   };
 
