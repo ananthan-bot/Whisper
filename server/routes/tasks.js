@@ -69,16 +69,17 @@ router.patch('/:id/claim', auth, async (req, res) => {
 
 router.patch('/:id/proof', auth, async (req, res) => {
   const { proof } = req.body;
-  if (!proof || typeof proof !== 'string' || proof.trim().length === 0) {
+  if (!proof || (typeof proof === 'string' && proof.trim().length === 0)) {
     return res.status(400).json({ error: 'proof content is required' });
   }
+  const proofString = typeof proof === 'object' ? JSON.stringify(proof) : proof;
   try {
     const check = await findTaskById(req.params.id);
     if (!check.rows[0]) return res.status(404).json({ error: 'Task not found' });
     if (check.rows[0].status !== 'claimed') {
       return res.status(409).json({ error: 'Proof can only be submitted for claimed tasks' });
     }
-    const result = await submitProof(req.params.id, proof);
+    const result = await submitProof(req.params.id, proofString);
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
