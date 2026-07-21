@@ -5,7 +5,7 @@ import { setAuthToken } from './apiClient.js';
 // Mock localStorage for node environment
 if (typeof localStorage === 'undefined') {
   const store = {};
-  global.localStorage = {
+  globalThis.localStorage = {
     getItem: (key) => store[key] || null,
     setItem: (key, val) => { store[key] = String(val); },
     removeItem: (key) => { delete store[key]; },

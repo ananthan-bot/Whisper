@@ -144,7 +144,7 @@ test('POST / — rejects invalid proof_type', async () => {
 test('POST / — defaults proof_type to screenshot when omitted', async () => {
   let capturedProofType;
   const db = {
-    createTask: async (id, uid, cat, desc, script, pt, alias) => {
+    createTask: async (id, uid, cat, desc, script, pt) => {
       capturedProofType = pt;
       return { rows: [{ id, category: cat, proof_type: pt }] };
     },

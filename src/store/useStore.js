@@ -6,7 +6,7 @@ import { apiClient, setAuthToken } from '../lib/apiClient';
 
 export const useStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       // ─── Auth Session ──────────────────────────────────────────────────
       user: null,
       token: null,
