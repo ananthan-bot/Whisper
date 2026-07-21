@@ -8,6 +8,9 @@ import RatingWidget from '../components/RatingWidget';
 import { formatRelativeTime } from '../lib/utils';
 import { cn } from '../lib/cn';
 
+import AudioRecorder from '../components/AudioRecorder';
+import { validateFile, fileToDataUrl } from '../lib/fileHelpers';
+
 export default function TaskView() {
   const { id } = useParams();
   const { tasks, claimTask, messages, addMessage, viewMode, submitProof, acceptTask, ratings } = useStore();
@@ -16,6 +19,8 @@ export default function TaskView() {
 
   const [chatInput,  setChatInput]  = useState('');
   const [proofInput, setProofInput] = useState('');
+  const [audioProof, setAudioProof] = useState(null);
+  const [imageProof, setImageProof] = useState(null);
 
   // Auto-scroll to bottom when messages update
   const chatEndRef = useRef(null);
@@ -40,8 +45,14 @@ export default function TaskView() {
   };
 
   const handleUploadProof = () => {
-    if (!proofInput.trim()) return;
-    submitProof(task.id, proofInput.trim());
+    if (!proofInput.trim() && !audioProof && !imageProof) return;
+    const proofData = (audioProof || imageProof)
+      ? { text: proofInput.trim(), audio: audioProof, image: imageProof }
+      : proofInput.trim();
+    submitProof(task.id, proofData);
+    setProofInput('');
+    setAudioProof(null);
+    setImageProof(null);
   };
 
   const isCompleted = task.status === 'completed';
@@ -136,13 +147,57 @@ export default function TaskView() {
                   <textarea
                     value={proofInput}
                     onChange={(e) => setProofInput(e.target.value)}
-                    className="w-full h-28 p-3 text-sm border border-slate-200 rounded-xl resize-none outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-slate-50"
-                    placeholder="Paste link or text proof here…"
+                    className="w-full h-24 p-3 text-sm border border-slate-200 rounded-xl resize-none outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-slate-50"
+                    placeholder="Enter summary notes, transcript, or link here…"
                   />
+
+                  {/* Audio Recording Option */}
+                  <div className="mt-1">
+                    <p className="text-xs font-semibold text-slate-600 mb-2">Optional Voice Note / Audio Proof:</p>
+                    <AudioRecorder
+                      onAudioCaptured={(dataUrl) => setAudioProof(dataUrl)}
+                      onClear={() => setAudioProof(null)}
+                    />
+                  </div>
+
+                  {/* Image/File Upload Option */}
+                  <div className="mt-1">
+                    <p className="text-xs font-semibold text-slate-600 mb-1.5">Optional Image Attachment:</p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const valid = validateFile(file);
+                          if (!valid.valid) {
+                            alert(valid.error);
+                            return;
+                          }
+                          const dataUrl = await fileToDataUrl(file);
+                          setImageProof(dataUrl);
+                        }
+                      }}
+                      className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer"
+                    />
+                    {imageProof && (
+                      <div className="mt-2 relative inline-block">
+                        <img src={imageProof} alt="Proof preview" className="w-32 h-24 object-cover rounded-lg border border-slate-200" />
+                        <button
+                          type="button"
+                          onClick={() => setImageProof(null)}
+                          className="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full p-0.5 text-xs"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <button
                     onClick={handleUploadProof}
-                    disabled={!proofInput.trim()}
-                    className="py-3 bg-slate-900 text-white rounded-full text-sm font-semibold hover:bg-slate-800 disabled:opacity-50 transition-colors"
+                    disabled={!proofInput.trim() && !audioProof && !imageProof}
+                    className="py-3 mt-2 bg-slate-900 text-white rounded-full text-sm font-semibold hover:bg-slate-800 disabled:opacity-50 transition-colors cursor-pointer"
                   >
                     Submit Proof
                   </button>
@@ -151,9 +206,27 @@ export default function TaskView() {
             ) : (
               isCompleted && (
                 <div className="flex flex-col gap-4">
-                  <div className="p-4 bg-primary-50 text-primary-800 rounded-xl text-sm break-all border border-primary-100 border-dashed">
+                  <div className="p-4 bg-primary-50 text-primary-800 rounded-xl text-sm break-words border border-primary-100 border-dashed">
                     <span className="font-semibold block mb-1">Proof Provided:</span>
-                    {task.proof}
+                    {typeof task.proof === 'object' ? (
+                      <div className="flex flex-col gap-3 mt-2">
+                        {task.proof.text && <p className="text-slate-700">{task.proof.text}</p>}
+                        {task.proof.audio && (
+                          <div>
+                            <span className="text-xs font-semibold text-slate-500 block mb-1">Voice Note:</span>
+                            <audio src={task.proof.audio} controls className="w-full h-10" />
+                          </div>
+                        )}
+                        {task.proof.image && (
+                          <div>
+                            <span className="text-xs font-semibold text-slate-500 block mb-1">Screenshot / Image:</span>
+                            <img src={task.proof.image} alt="Proof Attachment" className="max-w-full rounded-lg border border-slate-200 shadow-sm max-h-60 object-contain" />
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <span>{task.proof}</span>
+                    )}
                   </div>
                   {isRequester && (
                     <motion.button
