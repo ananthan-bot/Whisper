@@ -5,33 +5,39 @@ import { categories } from '../lib/categories';
 import { motion, AnimatePresence } from 'framer-motion';
 import TaskCard from '../components/TaskCard';
 import EmptyState from '../components/EmptyState';
-import { Inbox, SlidersHorizontal } from 'lucide-react';
+import { Inbox, SlidersHorizontal, Search, Filter } from 'lucide-react';
 import { cn } from '../lib/cn';
+import { filterAndSortTasks } from '../lib/filterHelpers';
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest First' },
   { value: 'oldest', label: 'Oldest First' },
 ];
 
+const PROOF_OPTIONS = [
+  { value: 'all', label: 'All Proof Types' },
+  { value: 'screenshot', label: 'Screenshot' },
+  { value: 'summary', label: 'Summary' },
+  { value: 'transcript', label: 'Transcript' },
+];
+
 export default function HelperDashboard() {
   const tasks = useStore((state) => state.tasks);
 
+  const [searchQuery, setSearchQuery]   = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
-  const [sortOrder,    setSortOrder]    = useState('newest');
+  const [proofFilter, setProofFilter]   = useState('all');
+  const [sortOrder,   setSortOrder]    = useState('newest');
 
-  // Apply filter
-  const filtered = tasks.filter((t) =>
-    activeFilter === 'all' ? true : t.category === activeFilter
-  );
-
-  // Apply sort
-  const sorted = [...filtered].sort((a, b) => {
-    const diff = new Date(a.createdAt) - new Date(b.createdAt);
-    return sortOrder === 'newest' ? -diff : diff;
+  const filteredAndSorted = filterAndSortTasks(tasks, {
+    searchQuery,
+    category: activeFilter,
+    proofType: proofFilter,
+    sortBy: sortOrder,
   });
 
   const filterOptions = [
-    { value: 'all', label: 'All Tasks' },
+    { value: 'all', label: 'All Categories' },
     ...categories.map((c) => ({ value: c.id, label: c.name })),
   ];
 
@@ -46,18 +52,47 @@ export default function HelperDashboard() {
           </p>
         </div>
 
-        {/* Sort */}
-        <div className="flex items-center gap-2 shrink-0">
-          <SlidersHorizontal className="w-4 h-4 text-slate-400" />
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-            className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-400"
-          >
-            {SORT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
+        {/* Filters & Search controls */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Search Bar */}
+          <div className="relative flex-1 sm:w-64">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-1.5 text-sm border border-slate-200 rounded-lg bg-white text-slate-700 outline-none focus:ring-2 focus:ring-primary-400"
+            />
+          </div>
+
+          {/* Proof Type Filter */}
+          <div className="flex items-center gap-1.5 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-sm">
+            <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <select
+              value={proofFilter}
+              onChange={(e) => setProofFilter(e.target.value)}
+              className="text-xs text-slate-700 bg-transparent outline-none cursor-pointer"
+            >
+              {PROOF_OPTIONS.map((p) => (
+                <option key={p.value} value={p.value}>{p.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sort */}
+          <div className="flex items-center gap-1.5 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-sm">
+            <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400" />
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="text-xs text-slate-700 bg-transparent outline-none cursor-pointer"
+            >
+              {SORT_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -88,7 +123,7 @@ export default function HelperDashboard() {
       {/* Results Count */}
       {tasks.length > 0 && (
         <p className="text-xs text-slate-400 mb-4">
-          {sorted.length} task{sorted.length !== 1 ? 's' : ''} found
+          {filteredAndSorted.length} task{filteredAndSorted.length !== 1 ? 's' : ''} found
           {activeFilter !== 'all' && ` in "${filterOptions.find(o => o.value === activeFilter)?.label}"`}
         </p>
       )}
@@ -102,18 +137,22 @@ export default function HelperDashboard() {
           ctaLabel="Post the first task"
           ctaTo="/post-task"
         />
-      ) : sorted.length === 0 ? (
+      ) : filteredAndSorted.length === 0 ? (
         <EmptyState
           icon={Inbox}
-          title="No tasks in this category"
-          description="Try selecting a different filter, or check back later."
-          ctaLabel="Show all tasks"
-          ctaOnClick={() => setActiveFilter('all')}
+          title="No matching tasks"
+          description="Try adjusting your search query or filters."
+          ctaLabel="Clear search and filters"
+          ctaOnClick={() => {
+            setSearchQuery('');
+            setActiveFilter('all');
+            setProofFilter('all');
+          }}
         />
       ) : (
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <AnimatePresence mode="popLayout">
-            {sorted.map((task, i) => (
+            {filteredAndSorted.map((task, i) => (
               <TaskCard key={task.id} task={task} index={i} />
             ))}
           </AnimatePresence>
