@@ -11,11 +11,13 @@ Whisper is a community platform where anyone can post tasks that require phone c
 - **100% Anonymous** — no real names, emails, or phone numbers ever shared
 - **4 Task Categories** — Negotiator, Secretary, Researcher, Wordsmith
 - **Multi-Step Task Posting** — guided 5-step form with validation
-- **Secure Anonymous Chat** — real-time chat between requester and helper (Socket.io)
-- **Proof of Completion** — helpers submit screenshot, summary, or transcript
+- **Secure Anonymous Chat** — real-time chat between requester and helper with Socket.io typing indicators
+- **Rich Proof of Completion** — voice notes (browser MediaRecorder API), image attachments, summaries, and transcripts
+- **Animated Toast System** — real-time feedback for claim, proof, accept, and rating events
+- **Live Search & Filters** — real-time keyword search, proof-type filter dropdown, and sorting on Helper Dashboard
+- **Authentication & Sessions** — JWT login & signup modal with user profile state
 - **Rating System** — 5-star ratings with emoji feedback after task completion
-- **Persistent State** — tasks and messages survive page refresh (localStorage)
-- **Filter & Sort** — category filter chips and sort by newest/oldest
+- **Code-Splitting & E2E Suite** — React.lazy route loading and Playwright integration tests
 
 ---
 
@@ -166,11 +168,33 @@ node --test src/lib/utils.test.js
 # Class-merging cn() helper
 node --test src/lib/cn.test.js
 
+# File and Audio proof validation helpers
+node --test src/lib/fileHelpers.test.js
+
+# Toast notification state manager
+node --test src/context/ToastContext.test.js
+
+# Dashboard search, filter, and sort helpers
+node --test src/lib/filterHelpers.test.js
+
+# API Client service
+node --test src/lib/apiClient.test.js
+
+# Auth Modal input validation
+node --test src/components/AuthModal.test.js
+
 # Zustand store action logic (tasks, messages, ratings, viewMode)
 node --test src/store/useStore.test.js
 
-# Run all frontend tests at once
-node --test src/lib/utils.test.js src/lib/cn.test.js src/store/useStore.test.js
+# Run all unit tests at once
+node --test src/lib/*.test.js src/context/*.test.js src/components/*.test.js src/store/*.test.js
+```
+
+### End-to-End (E2E) Tests
+
+```bash
+# Run Playwright E2E tests
+npx playwright test
 ```
 
 ### Backend Tests
