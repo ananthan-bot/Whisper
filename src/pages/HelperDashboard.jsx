@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useStore } from "../store/useStore";
-import { categories } from "./Landing";
+import { categories } from "../lib/categories";
 import { motion } from "framer-motion";
 
 export default function HelperDashboard() {

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import { ShieldAlert, CheckCircle } from "lucide-react";
-import { categories } from "./Landing";
+import { categories } from "../lib/categories";
 
 export default function TaskView() {
   const { id } = useParams();
