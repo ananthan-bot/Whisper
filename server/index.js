@@ -19,7 +19,7 @@ app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/messages', require('./routes/messages'));
 app.use('/api/ratings', require('./routes/ratings'));
 
-// Socket.io — real-time chat & typing status
+// Socket.io — real-time chat & typing status & notifications
 io.on('connection', (socket) => {
   socket.on('join_task', (taskId) => {
     socket.join(taskId);
@@ -32,6 +32,12 @@ io.on('connection', (socket) => {
   });
   socket.on('typing_stop', (data) => {
     socket.to(data.taskId).emit('user_typing', { senderRole: data.senderRole, isTyping: false });
+  });
+  socket.on('task_status_change', (data) => {
+    io.to(data.taskId).emit('status_updated', data);
+  });
+  socket.on('send_notification', (data) => {
+    socket.broadcast.emit('new_notification', data);
   });
 });
 
