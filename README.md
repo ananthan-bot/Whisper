@@ -10,9 +10,14 @@ Whisper is a community platform where anyone can post tasks that require phone c
 
 - **100% Anonymous** — no real names, emails, or phone numbers ever shared
 - **4 Task Categories** — Negotiator, Secretary, Researcher, Wordsmith
+- **🎙️ Web Speech STT & Audio Waveform** — live speech-to-text transcript generation and HTML5 Canvas audio waveform visualizer
+- **🔔 Real-Time Notification Center** — header bell dropdown with unread counts and task updates
+- **👤 User Reputation & Badges** — level tiers (*Rookie, Bronze, Silver, Gold, Platinum*) and achievement badges
+- **💰 Escrow Wallet System** — automatic bounty escrow hold on creation and release on task acceptance
+- **📍 Task Location & Distance** — Haversine distance calculations and location badges on task cards
+- **💬 Anonymous Live Chat** — Socket.IO typing indicators, message history, and status notifications
 - **Multi-Step Task Posting** — guided 5-step form with validation
-- **Secure Anonymous Chat** — real-time chat between requester and helper with Socket.io typing indicators
-- **Rich Proof of Completion** — voice notes (browser MediaRecorder API), image attachments, summaries, and transcripts
+- **Rich Proof of Completion** — voice notes, image attachments, summaries, and transcripts
 - **Animated Toast System** — real-time feedback for claim, proof, accept, and rating events
 - **Live Search & Filters** — real-time keyword search, proof-type filter dropdown, and sorting on Helper Dashboard
 - **Authentication & Sessions** — JWT login & signup modal with user profile state
