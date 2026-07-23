@@ -6,30 +6,27 @@ import { cn } from '../lib/cn';
 const STARS = [1, 2, 3, 4, 5];
 
 const EMOJI_MAP = {
-  1: { emoji: '😞', label: 'Poor' },
-  2: { emoji: '😐', label: 'Fair' },
-  3: { emoji: '🙂', label: 'Good' },
-  4: { emoji: '😄', label: 'Great' },
-  5: { emoji: '🤩', label: 'Amazing!' },
+  1: { emoji: '??', label: 'Poor' },
+  2: { emoji: '??', label: 'Fair' },
+  3: { emoji: '??', label: 'Good' },
+  4: { emoji: '??', label: 'Great' },
+  5: { emoji: '??', label: 'Amazing!' },
 };
 
-/**
- * Interactive 5-star rating widget.
- * @param {string} taskId - the task to rate
- */
-export default function RatingWidget({ taskId }) {
+export default function RatingWidget({ taskId, helperId }) {
   const { rateTask, ratings } = useStore();
   const existing = ratings?.[taskId];
 
-  const [hovered,   setHovered]   = useState(0);
+  const [hovered, setHovered] = useState(0);
   const [submitted, setSubmitted] = useState(!!existing);
-  const [selected,  setSelected]  = useState(existing || 0);
+  const [selected, setSelected] = useState(existing || 0);
+  const [review, setReview] = useState('');
 
   const display = hovered || selected;
 
   const handleSubmit = () => {
     if (!selected) return;
-    rateTask(taskId, selected);
+    rateTask(taskId, selected, helperId, review.trim());
     setSubmitted(true);
   };
 
@@ -40,7 +37,7 @@ export default function RatingWidget({ taskId }) {
         animate={{ opacity: 1, scale: 1 }}
         className="flex flex-col items-center gap-2 py-4 text-center"
       >
-        <span className="text-3xl">{EMOJI_MAP[selected]?.emoji ?? '⭐'}</span>
+        <span className="text-3xl">{EMOJI_MAP[selected]?.emoji ?? '?'}</span>
         <p className="text-sm font-medium text-primary-700">Thanks for your rating!</p>
         <div className="flex gap-1 mt-1">
           {STARS.map((s) => (
@@ -100,6 +97,15 @@ export default function RatingWidget({ taskId }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {display > 0 && (
+        <textarea
+          value={review}
+          onChange={(e) => setReview(e.target.value)}
+          placeholder="Optional review..."
+          className="w-full max-w-xs h-16 p-2.5 text-xs border border-slate-200 rounded-lg resize-none outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+        />
+      )}
 
       <button
         onClick={handleSubmit}

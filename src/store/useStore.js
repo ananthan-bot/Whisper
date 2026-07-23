@@ -145,10 +145,10 @@ export const useStore = create(
 
       // Ratings
       ratings: {},
-      rateTask: (taskId, stars, helperId) =>
+      rateTask: (taskId, stars, helperId, review) =>
         set((state) => {
           if (state.token && helperId) {
-            apiClient.submitRating(taskId, helperId, stars).catch(() => {});
+            apiClient.submitRating(taskId, helperId, stars, review).catch(() => {});
           }
           return {
             ratings: { ...state.ratings, [taskId]: stars },
@@ -172,3 +172,5 @@ export const useStore = create(
     }
   )
 );
+
+
