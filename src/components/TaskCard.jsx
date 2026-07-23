@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { cn } from '../lib/cn';
 import { formatRelativeTime } from '../lib/utils';
 import { categories } from '../lib/categories';
+import LocationBadge from './LocationBadge';
 
 const STATUS_STYLES = {
   open:      { dot: 'bg-slate-400',    badge: 'bg-slate-100 text-slate-600 border-slate-200',  label: 'Open' },
@@ -34,7 +35,7 @@ export default function TaskCard({ task, index = 0 }) {
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3">
         {category ? (
           <div className={cn('inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium', category.colorClass)}>
             {Icon && <Icon className="w-3.5 h-3.5" />}
@@ -44,9 +45,12 @@ export default function TaskCard({ task, index = 0 }) {
           <div className="w-20 h-5 rounded-full bg-slate-100" />
         )}
 
-        <div className={cn('flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border', status.badge)}>
-          <div className={cn('w-1.5 h-1.5 rounded-full', status.dot)} />
-          {status.label}
+        <div className="flex items-center gap-2">
+          <LocationBadge distanceMiles={task.distanceMiles} locationName={task.locationName} />
+          <div className={cn('flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border', status.badge)}>
+            <div className={cn('w-1.5 h-1.5 rounded-full', status.dot)} />
+            {status.label}
+          </div>
         </div>
       </div>
 
