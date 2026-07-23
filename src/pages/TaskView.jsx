@@ -5,7 +5,11 @@ import { ShieldAlert, CheckCircle, Send } from "lucide-react";
 import { categories } from "../lib/categories";
 import { motion, AnimatePresence } from "framer-motion";
 import RatingWidget from "../components/RatingWidget";
+import EscrowStatusBadge from "../components/EscrowStatusBadge";
+import TaskChat from "../components/TaskChat";
 import { formatRelativeTime } from "../lib/utils";
+import { createNotification, NOTIFICATION_TYPES } from "../lib/notificationHelpers";
+import { createTransaction } from "../lib/walletHelpers";
 import { cn } from "../lib/cn";
 
 import AudioRecorder from "../components/AudioRecorder";
@@ -14,7 +18,7 @@ import { useToast } from "../context/ToastContext";
 
 export default function TaskView() {
   const { id } = useParams();
-  const { tasks, claimTask, messages, addMessage, viewMode, submitProof, acceptTask, ratings } = useStore();
+  const { tasks, claimTask, messages, addMessage, viewMode, submitProof, acceptTask, ratings, addNotification } = useStore();
   const { addToast } = useToast();
   const task = tasks.find((t) => t.id === id);
   const taskMessages = messages.filter((m) => m.taskId === id);
@@ -44,7 +48,15 @@ export default function TaskView() {
 
   const handleClaim = () => {
     claimTask(task.id);
-    addToast("Task claimed! You can now chat securely.", "success");
+    addNotification(
+      createNotification({
+        type: NOTIFICATION_TYPES.TASK_CLAIMED,
+        title: 'Task Claimed',
+        message: `Task ${task.id} has been claimed by a helper.`,
+        taskId: task.id,
+      })
+    );
+    addToast("Task claimed! Bounty held safely in escrow.", "success");
   };
 
   const handleSend = () => {
@@ -62,12 +74,28 @@ export default function TaskView() {
     setProofInput("");
     setAudioProof(null);
     setImageProof(null);
+    addNotification(
+      createNotification({
+        type: NOTIFICATION_TYPES.PROOF_SUBMITTED,
+        title: 'Proof Submitted',
+        message: `Proof submitted for Task ${task.id}. Ready for review.`,
+        taskId: task.id,
+      })
+    );
     addToast("Proof submitted successfully!", "success");
   };
 
   const handleAcceptTask = () => {
     acceptTask(task.id);
-    addToast("Task accepted and completed! Thank you.", "success");
+    addNotification(
+      createNotification({
+        type: NOTIFICATION_TYPES.TASK_ACCEPTED,
+        title: 'Bounty Released!',
+        message: `Task ${task.id} accepted! Bounty payout released.`,
+        taskId: task.id,
+      })
+    );
+    addToast("Task accepted and bounty released!", "success");
   };
 
   const category     = categories.find((c) => c.id === task.category);
@@ -88,6 +116,10 @@ export default function TaskView() {
               </div>
             ) : null}
             <div className="text-xs text-slate-400 font-mono">{task.id}</div>
+          </div>
+
+          <div className="mb-4">
+            <EscrowStatusBadge status={task.status} bounty={25} />
           </div>
 
           <div className="flex items-center gap-2 mb-5">
