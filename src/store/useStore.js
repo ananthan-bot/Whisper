@@ -155,6 +155,22 @@ export const useStore = create(
           };
         }),
 
+      // Notifications
+      notifications: [],
+      addNotification: (notif) =>
+        set((state) => ({ notifications: [notif, ...state.notifications] })),
+      markNotificationAsRead: (id) =>
+        set((state) => ({
+          notifications: state.notifications.map((n) =>
+            n.id === id ? { ...n, read: true } : n
+          ),
+        })),
+      markAllNotificationsAsRead: () =>
+        set((state) => ({
+          notifications: state.notifications.map((n) => ({ ...n, read: true })),
+        })),
+      clearNotifications: () => set({ notifications: [] }),
+
       // UI State
       viewMode: 'requester',
       setViewMode: (mode) => set({ viewMode: mode }),
@@ -167,6 +183,7 @@ export const useStore = create(
         tasks: state.tasks,
         messages: state.messages,
         ratings: state.ratings,
+        notifications: state.notifications,
         viewMode: state.viewMode,
       }),
     }

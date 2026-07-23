@@ -4,10 +4,19 @@ import { useStore } from '../store/useStore';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/cn';
 import WhisperLogo from './WhisperLogo';
+import NotificationCenter from './NotificationCenter';
 import { LogOut } from 'lucide-react';
 
 export default function Navbar() {
-  const { user, logout, tasks } = useStore();
+  const {
+    user,
+    logout,
+    tasks,
+    notifications,
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
+    clearNotifications,
+  } = useStore();
   const location = useLocation();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
@@ -44,6 +53,16 @@ export default function Navbar() {
       </Link>
 
       <div className="flex items-center gap-4">
+        {user && (
+          <NotificationCenter
+            notifications={notifications}
+            onMarkAsRead={markNotificationAsRead}
+            onMarkAllAsRead={markAllNotificationsAsRead}
+            onClearAll={clearNotifications}
+            onNotificationClick={(taskId) => navigate(`/task/${taskId}`)}
+          />
+        )}
+
         {user && (
           <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} className="relative">
             <Link
