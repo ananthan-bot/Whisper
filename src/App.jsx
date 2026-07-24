@@ -11,8 +11,11 @@ import ProtectedRoute from './components/ProtectedRoute';
 function App() {
   return (
     <Routes>
+      {/* Landing has its own full-width layout with embedded Navbar */}
+      <Route index element={<Landing />} />
+
+      {/* All other pages use the shared Layout */}
       <Route path="/" element={<Layout />}>
-        <Route index element={<Landing />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
         <Route path="post-task" element={<ProtectedRoute><PostTask /></ProtectedRoute>} />
