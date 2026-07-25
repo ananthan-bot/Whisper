@@ -1,3 +1,4 @@
+/** @component WhisperLogo - Animated SVG logo brand asset */
 import { motion } from 'framer-motion';
 
 export default function WhisperLogo({ className = "w-8 h-8" }) {
