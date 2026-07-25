@@ -1,3 +1,4 @@
+/** @component AudioRecorder - Handles client-side voice recording */
 import { useState, useRef } from 'react';
 import { Mic, Square, Trash2, CheckCircle2, FileText } from 'lucide-react';
 import { fileToDataUrl } from '../lib/fileHelpers';
