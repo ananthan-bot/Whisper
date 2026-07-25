@@ -1,3 +1,4 @@
+/** @file Messaging API helper abstractions */
 import api from "./axios";
 
 export const getMessages = (taskId) => api.get(`/api/messages/${taskId}`);
