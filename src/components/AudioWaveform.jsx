@@ -1,3 +1,4 @@
+/** @component AudioWaveform - Visualizes audio spectrum data */
 import React, { useEffect, useRef } from 'react';
 
 /**
