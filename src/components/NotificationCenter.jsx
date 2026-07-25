@@ -1,3 +1,4 @@
+/** @component NotificationCenter - Real-time notification drawer */
 import { useState } from 'react';
 import { Bell, Check, Trash2, X, Info } from 'lucide-react';
 import { formatRelativeTime } from '../lib/utils';
