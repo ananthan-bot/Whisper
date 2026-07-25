@@ -1,3 +1,4 @@
+/** @component Layout - Main page wrapper and layout container */
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 
