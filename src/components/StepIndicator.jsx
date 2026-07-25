@@ -1,3 +1,4 @@
+/** @component StepIndicator - Multi-step progress indicator */
 import { motion } from 'framer-motion';
 import { cn } from '../lib/cn';
 
