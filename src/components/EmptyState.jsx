@@ -1,3 +1,4 @@
+/** @component EmptyState - Placeholder view for empty collections */
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
