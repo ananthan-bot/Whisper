@@ -1,3 +1,4 @@
+/** @file Auth API endpoint handlers and authentication helpers */
 import api from "./axios";
 
 export const signup = (data) => api.post("/api/auth/signup", data);
