@@ -1,3 +1,4 @@
+/** @component RatingWidget - Star rating display and interactive input */
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../store/useStore';
