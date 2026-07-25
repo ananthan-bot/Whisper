@@ -1,3 +1,4 @@
+/** @utility cn - Utility helper for conditionally merging Tailwind classes */
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
