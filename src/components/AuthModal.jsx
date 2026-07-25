@@ -1,3 +1,4 @@
+/** @component AuthModal - Modal dialog for user authentication */
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Lock, Mail, User, ArrowRight } from 'lucide-react';
