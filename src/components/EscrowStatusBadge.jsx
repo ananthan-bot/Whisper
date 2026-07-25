@@ -1,3 +1,4 @@
+/** @component EscrowStatusBadge - Renders escrow transaction status */
 import { Lock, CheckCircle2, ShieldAlert, DollarSign } from 'lucide-react';
 import { formatCurrency } from '../lib/walletHelpers';
 
