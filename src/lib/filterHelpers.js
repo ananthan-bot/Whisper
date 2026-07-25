@@ -1,3 +1,4 @@
+/** @utility filterHelpers - Helper functions for filtering tasks */
 /**
  * Helper functions to search, filter, and sort tasks on the dashboard.
  */
