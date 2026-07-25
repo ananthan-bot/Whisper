@@ -1,3 +1,4 @@
+/** @component TaskChat - Real-time task chat interface */
 import { useState, useEffect, useRef } from 'react';
 import { Send, User, Shield, MessageSquare } from 'lucide-react';
 import { formatRelativeTime } from '../lib/utils';
