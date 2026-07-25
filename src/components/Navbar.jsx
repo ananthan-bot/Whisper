@@ -1,3 +1,4 @@
+/** @component Navbar - Navigation bar header component */
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useStore } from '../store/useStore';
