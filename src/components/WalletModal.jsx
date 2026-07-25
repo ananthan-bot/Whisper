@@ -1,3 +1,4 @@
+/** @component WalletModal - Escrow wallet and transaction dialog */
 import { X, Wallet, ArrowDownRight, ArrowUpRight, Lock, DollarSign } from 'lucide-react';
 import { formatCurrency, calculateWalletSummary } from '../lib/walletHelpers';
 import { formatRelativeTime } from '../lib/utils';
