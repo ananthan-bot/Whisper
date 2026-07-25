@@ -1,3 +1,4 @@
+/** @component UserProfileModal - User profile view and edit dialog */
 import { X, Award, Star, CheckCircle, ShieldCheck, User } from 'lucide-react';
 import { calculateUserStats } from '../lib/reputationHelpers';
 
