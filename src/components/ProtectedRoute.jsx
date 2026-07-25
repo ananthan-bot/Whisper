@@ -1,3 +1,4 @@
+/** @component ProtectedRoute - Authentication guard wrapper */
 import { Navigate, useLocation } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 
