@@ -1,3 +1,4 @@
+/** @component LocationBadge - Formats and displays geolocation distance */
 import { MapPin, Globe } from 'lucide-react';
 import { formatDistanceString } from '../lib/locationHelpers';
 
