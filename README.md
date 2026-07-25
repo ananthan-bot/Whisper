@@ -1,3 +1,4 @@
+<!-- Architectural Overview & Repo Documentation -->
 # Whisper 🤫
 
 > **Anonymous task delegation — your voice, handled for you.**
