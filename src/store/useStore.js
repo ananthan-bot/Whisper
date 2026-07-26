@@ -155,6 +155,24 @@ export const useStore = create(
           };
         }),
 
+      // Gamification & Proofs
+      proofs: {},
+      addProofMedia: (taskId, proofObj) =>
+        set((state) => ({
+          proofs: {
+            ...state.proofs,
+            [taskId]: [...(state.proofs[taskId] || []), proofObj]
+          }
+        })),
+
+      // Task Urgency Mode
+      toggleUrgentTask: (taskId) =>
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === taskId ? { ...t, isUrgent: !t.isUrgent } : t
+          )
+        })),
+
       // Notifications
       notifications: [],
       addNotification: (notif) =>
@@ -184,6 +202,7 @@ export const useStore = create(
         messages: state.messages,
         ratings: state.ratings,
         notifications: state.notifications,
+        proofs: state.proofs,
         viewMode: state.viewMode,
       }),
     }
