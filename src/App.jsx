@@ -7,19 +7,24 @@ import TaskView from './pages/TaskView';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ProtectedRoute from './components/ProtectedRoute';
+import { ThemeProvider } from './context/ThemeContext';
+import OfflineBanner from './components/OfflineBanner';
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Landing />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
-        <Route path="post-task" element={<ProtectedRoute><PostTask /></ProtectedRoute>} />
-        <Route path="helper" element={<ProtectedRoute><HelperDashboard /></ProtectedRoute>} />
-        <Route path="task/:id" element={<ProtectedRoute><TaskView /></ProtectedRoute>} />
-      </Route>
-    </Routes>
+    <ThemeProvider>
+      <OfflineBanner />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Landing />} />
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
+          <Route path="post-task" element={<ProtectedRoute><PostTask /></ProtectedRoute>} />
+          <Route path="helper" element={<ProtectedRoute><HelperDashboard /></ProtectedRoute>} />
+          <Route path="task/:id" element={<ProtectedRoute><TaskView /></ProtectedRoute>} />
+        </Route>
+      </Routes>
+    </ThemeProvider>
   );
 }
 

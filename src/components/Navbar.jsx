@@ -7,7 +7,7 @@ import { cn } from '../lib/cn';
 import WhisperLogo from './WhisperLogo';
 import NotificationCenter from './NotificationCenter';
 import UserProfileModal from './UserProfileModal';
-import { LogOut, User } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const {
@@ -57,7 +57,8 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
           {user && (
             <NotificationCenter
               notifications={notifications}
