@@ -7,22 +7,27 @@ import TaskView from './pages/TaskView';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ProtectedRoute from './components/ProtectedRoute';
+import { ThemeProvider } from './context/ThemeContext';
+import OfflineBanner from './components/OfflineBanner';
 
 function App() {
   return (
-    <Routes>
-      {/* Landing has its own full-width layout with embedded Navbar */}
-      <Route index element={<Landing />} />
+    <ThemeProvider>
+      <OfflineBanner />
+      <Routes>
+        {/* Landing has its own full-width layout with embedded Navbar */}
+        <Route index element={<Landing />} />
 
-      {/* All other pages use the shared Layout */}
-      <Route path="/" element={<Layout />}>
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
-        <Route path="post-task" element={<ProtectedRoute><PostTask /></ProtectedRoute>} />
-        <Route path="helper" element={<ProtectedRoute><HelperDashboard /></ProtectedRoute>} />
-        <Route path="task/:id" element={<ProtectedRoute><TaskView /></ProtectedRoute>} />
-      </Route>
-    </Routes>
+        {/* All other pages use the shared Layout */}
+        <Route path="/" element={<Layout />}>
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
+          <Route path="post-task" element={<ProtectedRoute><PostTask /></ProtectedRoute>} />
+          <Route path="helper" element={<ProtectedRoute><HelperDashboard /></ProtectedRoute>} />
+          <Route path="task/:id" element={<ProtectedRoute><TaskView /></ProtectedRoute>} />
+        </Route>
+      </Routes>
+    </ThemeProvider>
   );
 }
 

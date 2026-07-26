@@ -9,7 +9,7 @@ import EscrowStatusBadge from "../components/EscrowStatusBadge";
 import TaskChat from "../components/TaskChat";
 import { formatRelativeTime } from "../lib/utils";
 import { createNotification, NOTIFICATION_TYPES } from "../lib/notificationHelpers";
-import { createTransaction } from "../lib/walletHelpers";
+import ProofGallery from "../components/ProofGallery";
 import { cn } from "../lib/cn";
 
 import AudioRecorder from "../components/AudioRecorder";
@@ -238,8 +238,9 @@ export default function TaskView() {
                 </div>
               )
             ) : (
-              isCompleted && (
+              (isCompleted || isAccepted) && (
                 <div className="flex flex-col gap-4">
+                  <ProofGallery taskTitle={task.category} helperName={task.helperAlias || 'Helper'} />
                   <div className="p-4 bg-primary-50 text-primary-800 rounded-xl text-sm break-words border border-primary-100 border-dashed">
                     <span className="font-semibold block mb-1">Proof Provided:</span>
                     {typeof task.proof === "object" ? (

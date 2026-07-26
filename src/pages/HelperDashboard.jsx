@@ -5,8 +5,8 @@ import { categories } from "../lib/categories";
 import { motion, AnimatePresence } from "framer-motion";
 import TaskCard from "../components/TaskCard";
 import EmptyState from "../components/EmptyState";
-import { Inbox, SlidersHorizontal, Search, Filter } from "lucide-react";
-import { cn } from "../lib/cn";
+import HelperLevelCard from "../components/HelperLevelCard";
+import VerificationBadge from "../components/VerificationBadge";
 import { filterAndSortTasks } from "../lib/filterHelpers";
 
 const SORT_OPTIONS = [
@@ -43,6 +43,17 @@ export default function HelperDashboard() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
+      {/* Gamification Level & Verification Widget */}
+      <div className="mb-6 space-y-4">
+        <HelperLevelCard tasks={tasks} />
+        <div className="flex items-center gap-2 flex-wrap bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Trust Badges:</span>
+          <VerificationBadge type="id_verified" />
+          <VerificationBadge type="top_rated" />
+          <VerificationBadge type="speed_demon" />
+        </div>
+      </div>
+
       <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-slate-800">Available Tasks</h1>

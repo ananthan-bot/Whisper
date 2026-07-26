@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { cn } from '../lib/cn';
 import { formatRelativeTime } from '../lib/utils';
 import { categories } from '../lib/categories';
-import LocationBadge from './LocationBadge';
+import UrgentTaskBadge from './UrgentTaskBadge';
 
 const STATUS_STYLES = {
   open:      { dot: 'bg-slate-400',    badge: 'bg-slate-100 text-slate-600 border-slate-200',  label: 'Open' },
@@ -47,6 +47,7 @@ export default function TaskCard({ task, index = 0 }) {
         )}
 
         <div className="flex items-center gap-2">
+          {task.isUrgent && <UrgentTaskBadge />}
           <LocationBadge distanceMiles={task.distanceMiles} locationName={task.locationName} />
           <div className={cn('flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border', status.badge)}>
             <div className={cn('w-1.5 h-1.5 rounded-full', status.dot)} />
