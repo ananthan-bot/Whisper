@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useStore } from "../store/useStore";
-import { ShieldAlert, CheckCircle, Send } from "lucide-react";
+import { ShieldAlert, CheckCircle, Send, AlertTriangle, RotateCcw, FileQuestion, X } from "lucide-react";
 import { categories } from "../lib/categories";
 import { motion, AnimatePresence } from "framer-motion";
 import RatingWidget from "../components/RatingWidget";
@@ -18,7 +18,10 @@ import { useToast } from "../context/ToastContext";
 
 export default function TaskView() {
   const { id } = useParams();
-  const { tasks, claimTask, messages, addMessage, viewMode, submitProof, acceptTask, ratings, addNotification } = useStore();
+  const {
+    tasks, claimTask, messages, addMessage, viewMode, submitProof, acceptTask,
+    requestRevision, disputeTask, refundTask, ratings, addNotification
+  } = useStore();
   const { addToast } = useToast();
   const task = tasks.find((t) => t.id === id);
   const taskMessages = messages.filter((m) => m.taskId === id);
@@ -27,6 +30,10 @@ export default function TaskView() {
   const [proofInput, setProofInput] = useState("");
   const [audioProof, setAudioProof] = useState(null);
   const [imageProof, setImageProof] = useState(null);
+
+  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
+  const [isRevisionModalOpen, setIsRevisionModalOpen] = useState(false);
+  const [modalNoteInput, setModalNoteInput] = useState("");
 
   const chatEndRef = useRef(null);
   useEffect(() => {
@@ -42,7 +49,10 @@ export default function TaskView() {
 
   const isCompleted = task.status === "completed";
   const isAccepted  = task.status === "accepted";
-  const isClaimed   = task.status === "claimed" || isCompleted || isAccepted;
+  const isDisputed  = task.status === "disputed";
+  const isRefunded  = task.status === "refunded";
+  const isRevisionRequested = task.status === "revision_requested";
+  const isClaimed   = task.status === "claimed" || isCompleted || isAccepted || isDisputed || isRefunded || isRevisionRequested;
 
   const isRequester = viewMode === "requester";
 
@@ -96,6 +106,51 @@ export default function TaskView() {
       })
     );
     addToast("Task accepted and bounty released!", "success");
+  };
+
+  const handleRequestRevisionSubmit = () => {
+    if (!modalNoteInput.trim()) return;
+    requestRevision(task.id, modalNoteInput.trim());
+    addNotification(
+      createNotification({
+        type: NOTIFICATION_TYPES.REVISION_REQUESTED,
+        title: 'Revision Requested',
+        message: `Revision requested for Task ${task.id}: ${modalNoteInput.trim()}`,
+        taskId: task.id,
+      })
+    );
+    addToast("Revision requested from helper.", "info");
+    setModalNoteInput("");
+    setIsRevisionModalOpen(false);
+  };
+
+  const handleDisputeTaskSubmit = () => {
+    if (!modalNoteInput.trim()) return;
+    disputeTask(task.id, modalNoteInput.trim());
+    addNotification(
+      createNotification({
+        type: NOTIFICATION_TYPES.TASK_DISPUTED,
+        title: 'Task Disputed',
+        message: `Task ${task.id} has been placed under dispute: ${modalNoteInput.trim()}`,
+        taskId: task.id,
+      })
+    );
+    addToast("Dispute initiated. Bounty locked.", "warning");
+    setModalNoteInput("");
+    setIsDisputeModalOpen(false);
+  };
+
+  const handleRefundTaskSubmit = () => {
+    refundTask(task.id);
+    addNotification(
+      createNotification({
+        type: NOTIFICATION_TYPES.TASK_REFUNDED,
+        title: 'Bounty Refunded',
+        message: `Escrow bounty refunded for Task ${task.id}.`,
+        taskId: task.id,
+      })
+    );
+    addToast("Bounty refunded back to your wallet!", "success");
   };
 
   const category     = categories.find((c) => c.id === task.category);
@@ -238,43 +293,115 @@ export default function TaskView() {
                 </div>
               )
             ) : (
-              (isCompleted || isAccepted) && (
+              (isCompleted || isAccepted || isDisputed || isRefunded || isRevisionRequested) && (
                 <div className="flex flex-col gap-4">
-                  <ProofGallery taskTitle={task.category} helperName={task.helperAlias || 'Helper'} />
-                  <div className="p-4 bg-primary-50 text-primary-800 rounded-xl text-sm break-words border border-primary-100 border-dashed">
-                    <span className="font-semibold block mb-1">Proof Provided:</span>
-                    {typeof task.proof === "object" ? (
-                      <div className="flex flex-col gap-3 mt-2">
-                        {task.proof.text && <p className="text-slate-700">{task.proof.text}</p>}
-                        {task.proof.audio && (
-                          <div>
-                            <span className="text-xs font-semibold text-slate-500 block mb-1">Voice Note:</span>
-                            <audio src={task.proof.audio} controls className="w-full h-10" />
-                          </div>
-                        )}
-                        {task.proof.image && (
-                          <div>
-                            <span className="text-xs font-semibold text-slate-500 block mb-1">Screenshot / Image:</span>
-                            <img src={task.proof.image} alt="Proof Attachment" className="max-w-full rounded-lg border border-slate-200 shadow-sm max-h-60 object-contain" />
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <span>{task.proof}</span>
-                    )}
-                  </div>
-                  {isRequester && (
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={handleAcceptTask}
-                      className="w-full py-3 bg-primary-600 text-white rounded-full text-sm font-semibold hover:bg-primary-500 flex justify-center items-center gap-2 shadow-soft transition-colors"
-                    >
-                      <CheckCircle className="w-4 h-4" /> Accept & Complete
-                    </motion.button>
+                  {task.proof && <ProofGallery taskTitle={task.category} helperName={task.helperAlias || 'Helper'} />}
+                  {task.proof && (
+                    <div className="p-4 bg-primary-50 text-primary-800 rounded-xl text-sm break-words border border-primary-100 border-dashed">
+                      <span className="font-semibold block mb-1">Proof Provided:</span>
+                      {typeof task.proof === "object" ? (
+                        <div className="flex flex-col gap-3 mt-2">
+                          {task.proof.text && <p className="text-slate-700">{task.proof.text}</p>}
+                          {task.proof.audio && (
+                            <div>
+                              <span className="text-xs font-semibold text-slate-500 block mb-1">Voice Note:</span>
+                              <audio src={task.proof.audio} controls className="w-full h-10" />
+                            </div>
+                          )}
+                          {task.proof.image && (
+                            <div>
+                              <span className="text-xs font-semibold text-slate-500 block mb-1">Screenshot / Image:</span>
+                              <img src={task.proof.image} alt="Proof Attachment" className="max-w-full rounded-lg border border-slate-200 shadow-sm max-h-60 object-contain" />
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span>{task.proof}</span>
+                      )}
+                    </div>
                   )}
-                  {!isRequester && (
-                    <div className="text-sm text-slate-500 text-center">Waiting for requester to review.</div>
+
+                  {/* Requester Review Action Buttons */}
+                  {isRequester && isCompleted && (
+                    <div className="flex flex-col gap-2.5">
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={handleAcceptTask}
+                        className="w-full py-3 bg-primary-600 text-white rounded-full text-sm font-semibold hover:bg-primary-500 flex justify-center items-center gap-2 shadow-soft transition-colors"
+                      >
+                        <CheckCircle className="w-4 h-4" /> Accept & Release Bounty
+                      </motion.button>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={() => {
+                            setModalNoteInput("");
+                            setIsRevisionModalOpen(true);
+                          }}
+                          className="py-2.5 bg-orange-50 text-orange-700 border border-orange-200 rounded-full text-xs font-semibold hover:bg-orange-100 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                        >
+                          <FileQuestion className="w-3.5 h-3.5" /> Request Revision
+                        </button>
+                        <button
+                          onClick={() => {
+                            setModalNoteInput("");
+                            setIsDisputeModalOpen(true);
+                          }}
+                          className="py-2.5 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-xs font-semibold hover:bg-rose-100 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                        >
+                          <AlertTriangle className="w-3.5 h-3.5" /> Raise Dispute
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Revision Requested State Banner */}
+                  {isRevisionRequested && (
+                    <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl text-orange-800 text-xs">
+                      <div className="flex items-center gap-2 font-semibold text-sm mb-1 text-orange-900">
+                        <FileQuestion className="w-4 h-4 text-orange-600" /> Revision Requested
+                      </div>
+                      <p className="mb-2">{task.revisionNote || "Poster has requested changes or additional proof details."}</p>
+                      {!isRequester && (
+                        <p className="font-semibold text-orange-900">Please upload revised proof above to resubmit.</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Disputed State Banner */}
+                  {isDisputed && (
+                    <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-900 text-xs">
+                      <div className="flex items-center gap-2 font-semibold text-sm mb-1 text-rose-800">
+                        <AlertTriangle className="w-4 h-4 text-rose-600" /> Dispute Under Mediation
+                      </div>
+                      <p className="mb-3 text-rose-700">{task.disputeReason || "Task is under dispute. Bounty escrow is locked."}</p>
+                      {isRequester && (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={handleRefundTaskSubmit}
+                            className="px-4 py-2 bg-rose-600 text-white font-semibold rounded-full text-xs hover:bg-rose-500 transition-colors flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" /> Refund Escrow Bounty
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Refunded State Banner */}
+                  {isRefunded && (
+                    <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-xl text-indigo-900 text-xs flex items-center gap-2">
+                      <RotateCcw className="w-5 h-5 text-indigo-600 shrink-0" />
+                      <div>
+                        <span className="font-semibold block text-sm">Escrow Bounty Refunded</span>
+                        <span>Funds have been returned to poster's wallet balance.</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {!isRequester && isCompleted && (
+                    <div className="text-sm text-slate-500 text-center">Waiting for requester to review proof.</div>
                   )}
                 </div>
               )
@@ -387,6 +514,91 @@ export default function TaskView() {
           <ShieldAlert className="w-12 h-12 text-slate-300 mb-4" />
           <h3 className="text-lg font-semibold text-slate-700 mb-2">Chat starts when claimed</h3>
           <p className="text-sm max-w-sm">The secure, anonymous chat opens once a helper picks up this task.</p>
+        </div>
+      )}
+      {/* Revision Modal */}
+      {isRevisionModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 text-orange-700 font-semibold text-base">
+                <FileQuestion className="w-5 h-5" /> Request Revision
+              </div>
+              <button
+                onClick={() => setIsRevisionModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-full"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-xs text-slate-500 mb-3">
+              Describe what changes or additional proof details you require from the helper before accepting this task.
+            </p>
+            <textarea
+              value={modalNoteInput}
+              onChange={(e) => setModalNoteInput(e.target.value)}
+              placeholder="e.g., Please provide a clearer screenshot of the confirmation email..."
+              className="w-full h-28 p-3 text-xs border border-slate-200 rounded-xl resize-none outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 mb-4"
+            />
+            <div className="flex items-center justify-end gap-2">
+              <button
+                onClick={() => setIsRevisionModalOpen(false)}
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-full"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRequestRevisionSubmit}
+                disabled={!modalNoteInput.trim()}
+                className="px-5 py-2 text-xs font-semibold text-white bg-orange-600 hover:bg-orange-500 disabled:opacity-50 rounded-full transition-colors"
+              >
+                Send Request
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Dispute Modal */}
+      {isDisputeModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 text-rose-700 font-semibold text-base">
+                <AlertTriangle className="w-5 h-5" /> Raise Dispute
+              </div>
+              <button
+                onClick={() => setIsDisputeModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-full"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-xs text-slate-500 mb-3">
+              State the reason for opening a dispute. Bounty escrow will be locked while under mediation.
+            </p>
+            <textarea
+              value={modalNoteInput}
+              onChange={(e) => setModalNoteInput(e.target.value)}
+              placeholder="e.g., The call was not completed as instructed in the script..."
+              className="w-full h-28 p-3 text-xs border border-slate-200 rounded-xl resize-none outline-none focus:ring-2 focus:ring-rose-500 bg-slate-50 mb-4"
+            />
+            <div className="flex items-center justify-end gap-2">
+              <button
+                onClick={() => setIsDisputeModalOpen(false)}
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-full"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDisputeTaskSubmit}
+                disabled={!modalNoteInput.trim()}
+                className="px-5 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-500 disabled:opacity-50 rounded-full transition-colors"
+              >
+                Initiate Dispute
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
