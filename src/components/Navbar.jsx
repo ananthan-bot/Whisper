@@ -108,17 +108,16 @@ export default function Navbar() {
 
           {user ? (
             <div className="flex items-center gap-3 pl-2 border-l border-slate-200">
-              <button
-                type="button"
-                onClick={() => setIsProfileOpen(true)}
+              <Link
+                to="/profile"
                 className="flex items-center gap-2 hover:bg-slate-100 px-2 py-1 rounded-full transition-colors cursor-pointer"
-                title="View Profile"
+                title="View Profile Hub"
               >
                 <div className="w-7 h-7 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-xs">
                   {user.alias ? user.alias.charAt(0).toUpperCase() : <User className="w-3.5 h-3.5" />}
                 </div>
                 <span className="text-sm font-medium text-slate-700">{user.alias}</span>
-              </button>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-1 text-xs text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"

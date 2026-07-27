@@ -4,6 +4,7 @@ import Landing from './pages/Landing';
 import PostTask from './pages/PostTask';
 import HelperDashboard from './pages/HelperDashboard';
 import TaskView from './pages/TaskView';
+import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -22,6 +23,7 @@ function App() {
           <Route path="post-task" element={<ProtectedRoute><PostTask /></ProtectedRoute>} />
           <Route path="helper" element={<ProtectedRoute><HelperDashboard /></ProtectedRoute>} />
           <Route path="task/:id" element={<ProtectedRoute><TaskView /></ProtectedRoute>} />
+          <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         </Route>
       </Routes>
     </ThemeProvider>
