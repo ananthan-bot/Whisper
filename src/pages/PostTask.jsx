@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldCheck, ArrowRight, ArrowLeft } from "lucide-react";
+import { ShieldCheck, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
 import { useStore } from "../store/useStore";
 import { categories } from "../lib/categories";
+import AIScriptAssistant from "../components/AIScriptAssistant";
 
 export default function PostTask() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function PostTask() {
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     category: "",
     description: "",
@@ -92,13 +94,31 @@ export default function PostTask() {
 
           {step === 3 && (
             <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="p-8">
-              <h2 className="text-xl font-medium text-slate-800 mb-6">Provide a script (optional)</h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-medium text-slate-800">Provide a script (optional)</h2>
+                <button
+                  type="button"
+                  onClick={() => setIsAiModalOpen(true)}
+                  className="px-3.5 py-1.5 bg-gradient-to-r from-primary-600 to-indigo-600 text-white rounded-full text-xs font-semibold hover:from-primary-500 hover:to-indigo-500 flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" /> AI Script Generator
+                </button>
+              </div>
               <textarea
                 value={formData.script}
                 onChange={(e) => setFormData({ ...formData, script: e.target.value })}
-                className="w-full h-40 p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none resize-none bg-slate-50"
+                className="w-full h-40 p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none resize-none bg-slate-50 font-mono text-xs"
                 placeholder="- Please say you are calling on behalf of me&#10;- Do not accept any retention offers"
               />
+
+              {isAiModalOpen && (
+                <AIScriptAssistant
+                  category={formData.category || 'negotiator'}
+                  description={formData.description}
+                  onSelectScript={(script) => setFormData((prev) => ({ ...prev, script }))}
+                  onClose={() => setIsAiModalOpen(false)}
+                />
+              )}
             </motion.div>
           )}
 
