@@ -18,7 +18,7 @@ export const BADGE_DEFINITIONS = [
 export function calculateProfileStats(tasks = [], ratings = {}, userAlias = 'User') {
   const userStats = calculateUserStats(userAlias, tasks, ratings);
   const postedTasks = tasks.filter((t) => t.alias === userAlias);
-  const claimedTasks = tasks.filter((t) => t.helperAlias === userAlias || t.status === 'completed' || t.status === 'accepted');
+  const claimedTasks = tasks.filter((t) => t.helperAlias === userAlias || t.helper === userAlias);
 
   const totalBountySpent = postedTasks.reduce((acc, t) => acc + (t.bounty || 25), 0);
   const totalBountyEarned = claimedTasks.reduce((acc, t) => (t.status === 'accepted' ? acc + (t.bounty || 25) : acc), 0);
