@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { generateAlias } from '../lib/utils';
 import { MOCK_TASKS } from './mockTasks';
 import { apiClient, setAuthToken } from '../lib/apiClient';
+import { createTransaction } from '../lib/walletHelpers';
 
 export const useStore = create(
   persist(
@@ -101,6 +102,46 @@ export const useStore = create(
             ),
           };
         }),
+
+      requestRevision: (taskId, note = '') =>
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === taskId
+              ? { ...t, status: 'revision_requested', revisionNote: note }
+              : t
+          ),
+        })),
+
+      disputeTask: (taskId, reason = '') =>
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === taskId
+              ? { ...t, status: 'disputed', disputeReason: reason }
+              : t
+          ),
+        })),
+
+      refundTask: (taskId) =>
+        set((state) => {
+          const targetTask = state.tasks.find((t) => t.id === taskId);
+          const bountyAmount = targetTask?.bounty || 25;
+          const refundTx = createTransaction({
+            type: 'REFUND',
+            amount: bountyAmount,
+            taskId,
+            description: `Escrow Refund for Task ${taskId}`,
+          });
+
+          return {
+            tasks: state.tasks.map((t) =>
+              t.id === taskId ? { ...t, status: 'refunded' } : t
+            ),
+            transactions: [refundTx, ...(state.transactions || [])],
+          };
+        }),
+
+      // Wallet Transactions
+      transactions: [],
 
       // Messages
       messages: [],
@@ -203,6 +244,7 @@ export const useStore = create(
         ratings: state.ratings,
         notifications: state.notifications,
         proofs: state.proofs,
+        transactions: state.transactions,
         viewMode: state.viewMode,
       }),
     }
