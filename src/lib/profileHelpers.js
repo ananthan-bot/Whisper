@@ -2,7 +2,7 @@
  * User Profile & Activity Hub Helper Utilities
  */
 
-import { calculateUserStats } from './reputationHelpers';
+import { calculateUserStats } from './reputationHelpers.js';
 
 export const BADGE_DEFINITIONS = [
   { id: 'first_task', name: 'First Voice', icon: '🎙️', description: 'Posted your first task' },

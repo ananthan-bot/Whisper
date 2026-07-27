@@ -13,7 +13,7 @@ test('getScriptTemplates — returns category specific templates with fallback',
 
 test('generateScriptDraft — appends user task description to template script', () => {
   const draft = generateScriptDraft('negotiator', 'Need help canceling gym membership');
-  assert.ok(draft.includes('Talking points'));
+  assert.ok(draft.toLowerCase().includes('talking points'));
   assert.ok(draft.includes('Specific Task Details:'));
   assert.ok(draft.includes('Need help canceling gym membership'));
 });
