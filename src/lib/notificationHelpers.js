@@ -9,6 +9,9 @@ export const NOTIFICATION_TYPES = {
   TASK_ACCEPTED: 'TASK_ACCEPTED',
   RATING_RECEIVED: 'RATING_RECEIVED',
   MESSAGE_RECEIVED: 'MESSAGE_RECEIVED',
+  TASK_DISPUTED: 'TASK_DISPUTED',
+  TASK_REFUNDED: 'TASK_REFUNDED',
+  REVISION_REQUESTED: 'REVISION_REQUESTED',
 };
 
 /**
@@ -64,6 +67,12 @@ export function getNotificationBadgeColor(type) {
       return 'bg-emerald-100 text-emerald-700 border-emerald-200';
     case NOTIFICATION_TYPES.RATING_RECEIVED:
       return 'bg-purple-100 text-purple-700 border-purple-200';
+    case NOTIFICATION_TYPES.TASK_DISPUTED:
+      return 'bg-rose-100 text-rose-700 border-rose-200';
+    case NOTIFICATION_TYPES.TASK_REFUNDED:
+      return 'bg-indigo-100 text-indigo-700 border-indigo-200';
+    case NOTIFICATION_TYPES.REVISION_REQUESTED:
+      return 'bg-orange-100 text-orange-700 border-orange-200';
     default:
       return 'bg-slate-100 text-slate-700 border-slate-200';
   }
