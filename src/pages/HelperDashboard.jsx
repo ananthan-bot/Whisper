@@ -7,11 +7,16 @@ import TaskCard from "../components/TaskCard";
 import EmptyState from "../components/EmptyState";
 import HelperLevelCard from "../components/HelperLevelCard";
 import VerificationBadge from "../components/VerificationBadge";
+import DistanceRadiusSelect from "../components/DistanceRadiusSelect";
+import BountyRangeSlider from "../components/BountyRangeSlider";
+import StatusTabFilter from "../components/StatusTabFilter";
 import { filterAndSortTasks } from "../lib/filterHelpers";
+import { Search, Filter, SlidersHorizontal } from "lucide-react";
 
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest First" },
   { value: "oldest", label: "Oldest First" },
+  { value: "highest_bounty", label: "Highest Bounty" },
 ];
 
 const PROOF_OPTIONS = [
@@ -27,12 +32,18 @@ export default function HelperDashboard() {
   const [searchQuery, setSearchQuery]   = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [proofFilter, setProofFilter]   = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [maxDistance, setMaxDistance]   = useState(null);
+  const [minBounty, setMinBounty]       = useState(0);
   const [sortOrder,   setSortOrder]    = useState("newest");
 
   const filteredAndSorted = filterAndSortTasks(tasks, {
     searchQuery,
     category: activeFilter,
     proofType: proofFilter,
+    status: statusFilter,
+    maxDistanceMiles: maxDistance,
+    minBounty,
     sortBy: sortOrder,
   });
 
@@ -62,42 +73,48 @@ export default function HelperDashboard() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative flex-1 sm:w-64">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search tasks..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-sm border border-slate-200 rounded-lg bg-white text-slate-700 outline-none focus:ring-2 focus:ring-primary-400"
-            />
-          </div>
+        <div className="flex flex-col gap-3">
+          <StatusTabFilter value={statusFilter} onChange={setStatusFilter} />
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative flex-1 sm:w-64">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search tasks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 text-sm border border-slate-200 rounded-lg bg-white text-slate-700 outline-none focus:ring-2 focus:ring-primary-400"
+              />
+            </div>
 
-          <div className="flex items-center gap-1.5 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-sm">
-            <Filter className="w-3.5 h-3.5 text-slate-400" />
-            <select
-              value={proofFilter}
-              onChange={(e) => setProofFilter(e.target.value)}
-              className="text-xs text-slate-700 bg-transparent outline-none cursor-pointer"
-            >
-              {PROOF_OPTIONS.map((p) => (
-                <option key={p.value} value={p.value}>{p.label}</option>
-              ))}
-            </select>
-          </div>
+            <DistanceRadiusSelect value={maxDistance} onChange={setMaxDistance} />
+            <BountyRangeSlider value={minBounty} onChange={setMinBounty} />
 
-          <div className="flex items-center gap-1.5 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-sm">
-            <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400" />
-            <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="text-xs text-slate-700 bg-transparent outline-none cursor-pointer"
-            >
-              {SORT_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
+            <div className="flex items-center gap-1.5 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-sm">
+              <Filter className="w-3.5 h-3.5 text-slate-400" />
+              <select
+                value={proofFilter}
+                onChange={(e) => setProofFilter(e.target.value)}
+                className="text-xs text-slate-700 bg-transparent outline-none cursor-pointer"
+              >
+                {PROOF_OPTIONS.map((p) => (
+                  <option key={p.value} value={p.value}>{p.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex items-center gap-1.5 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-sm">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400" />
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="text-xs text-slate-700 bg-transparent outline-none cursor-pointer"
+              >
+                {SORT_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </div>
