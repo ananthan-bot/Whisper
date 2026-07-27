@@ -1,19 +1,17 @@
-/** @component AudioWaveform - Visualizes audio spectrum data */
 import React, { useEffect, useRef } from 'react';
+import AudioSpeedControl from './AudioSpeedControl';
+import { formatAudioTime } from '../lib/audioPlayerHelpers';
 
-/**
- * Animated HTML5 Canvas Waveform Visualizer
- * @param {boolean} isRecording - Whether audio is actively recording
- * @param {boolean} isPlaying - Whether audio is currently playing back
- * @param {string} color - Primary waveform color (hex/hsl/rgb)
- * @param {number} height - Canvas height in pixels
- */
 export default function AudioWaveform({
   isRecording = false,
   isPlaying = false,
   color = '#1D9E75',
   height = 40,
   barCount = 32,
+  currentTime = 0,
+  duration = 0,
+  speed = 1,
+  onSpeedChange,
 }) {
   const canvasRef = useRef(null);
 
@@ -33,19 +31,17 @@ export default function AudioWaveform({
 
       const gap = 3;
       const barWidth = Math.max(2, (width - barCount * gap) / barCount);
-      phase += isRecording ? 0.15 : isPlaying ? 0.08 : 0.02;
+      phase += isRecording ? 0.15 : isPlaying ? 0.08 * speed : 0.02;
 
       for (let i = 0; i < barCount; i++) {
         const x = i * (barWidth + gap);
         let amplitude = 0.15; // idle default height
 
         if (isRecording) {
-          // Dynamic sine + random noise visualizer for live recording
           const sine = Math.sin(phase + i * 0.4);
           const noise = Math.random() * 0.3;
           amplitude = Math.min(1, Math.max(0.2, (sine + 1) / 2 * 0.7 + noise));
         } else if (isPlaying) {
-          // Smooth sine wave visualizer for playback
           const sine = Math.sin(phase + i * 0.25);
           amplitude = Math.min(1, Math.max(0.25, (sine + 1) / 2 * 0.8));
         }
@@ -67,10 +63,14 @@ export default function AudioWaveform({
     return () => {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
-  }, [isRecording, isPlaying, color, height, barCount]);
+  }, [isRecording, isPlaying, color, height, barCount, speed]);
 
   return (
-    <div className="w-full overflow-hidden flex items-center justify-center my-2">
+    <div className="w-full overflow-hidden flex flex-col gap-1 my-2">
+      <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono">
+        <span>{formatAudioTime(currentTime)} / {formatAudioTime(duration)}</span>
+        {onSpeedChange && <AudioSpeedControl speed={speed} onSpeedChange={onSpeedChange} />}
+      </div>
       <canvas
         ref={canvasRef}
         aria-label="Audio waveform visualization"
