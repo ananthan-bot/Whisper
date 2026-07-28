@@ -49,9 +49,11 @@ Whisper is a community platform where anyone can post tasks that require phone c
 # From the project root
 npm install
 npm run dev
+npm test       # Runs full node unit test suite
 ```
 
 The frontend runs at **http://localhost:5173**
+
 
 ### Backend (optional — for real-time chat)
 
@@ -75,6 +77,7 @@ whisper/
 │   │   ├── Navbar.jsx          # Sticky nav with mode toggle & task badge
 │   │   ├── Layout.jsx          # Page wrapper with Navbar + Outlet
 │   │   ├── WhisperLogo.jsx     # Animated SVG logo
+│   │   ├── LoadingSpinner.jsx  # Reusable animated loading spinner component
 │   │   ├── StepIndicator.jsx   # Multi-step progress bar
 │   │   ├── RatingWidget.jsx    # 5-star rating component
 │   │   ├── TaskCard.jsx        # Reusable task card
@@ -88,7 +91,7 @@ whisper/
 │   │   └── useStore.js         # Zustand store (tasks, messages, ratings)
 │   └── lib/
 │       ├── cn.js               # clsx + tailwind-merge helper
-│       └── utils.js            # formatRelativeTime, generateAlias, truncate
+│       └── utils.js            # formatRelativeTime, generateAlias, truncate, formatCompactCurrency
 ├── server/
 │   ├── routes/                 # Express route handlers
 │   ├── db/                     # SQLite database
