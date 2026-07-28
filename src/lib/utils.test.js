@@ -1,6 +1,6 @@
 import test   from 'node:test';
 import assert from 'node:assert/strict';
-import { formatRelativeTime, truncate, generateAlias } from './utils.js';
+import { formatRelativeTime, truncate, generateAlias, formatCompactCurrency } from './utils.js';
 
 // ─── formatRelativeTime ───────────────────────────────────────────────────────
 
@@ -117,3 +117,29 @@ test('generateAlias — produces multiple distinct values across calls', () => {
   const aliases = new Set(Array.from({ length: 50 }, generateAlias));
   assert.ok(aliases.size > 1, 'Expected more than one distinct alias in 50 calls');
 });
+
+// ─── formatCompactCurrency ───────────────────────────────────────────────────
+
+test('formatCompactCurrency — handles null, undefined, NaN inputs', () => {
+  assert.equal(formatCompactCurrency(null), '$0');
+  assert.equal(formatCompactCurrency(undefined), '$0');
+  assert.equal(formatCompactCurrency('abc'), '$0');
+});
+
+test('formatCompactCurrency — formats small numbers directly', () => {
+  assert.equal(formatCompactCurrency(0), '$0');
+  assert.equal(formatCompactCurrency(50), '$50');
+  assert.equal(formatCompactCurrency(999), '$999');
+});
+
+test('formatCompactCurrency — formats thousands with k suffix', () => {
+  assert.equal(formatCompactCurrency(1000), '$1k');
+  assert.equal(formatCompactCurrency(1500), '$1.5k');
+  assert.equal(formatCompactCurrency(250000), '$250k');
+});
+
+test('formatCompactCurrency — formats millions with M suffix', () => {
+  assert.equal(formatCompactCurrency(1000000), '$1M');
+  assert.equal(formatCompactCurrency(2500000), '$2.5M');
+});
+

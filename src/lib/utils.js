@@ -36,3 +36,19 @@ export function truncate(str, maxLen = 120) {
 export function generateAlias() {
   return `User #${Math.floor(1000 + Math.random() * 9000)}`;
 }
+
+/**
+ * Formats a number into compact currency representation e.g. $1.5k, $2M
+ */
+export function formatCompactCurrency(amount) {
+  if (amount === null || amount === undefined || isNaN(amount)) return '$0';
+  const num = Number(amount);
+  if (Math.abs(num) >= 1_000_000) {
+    return `$${(num / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
+  }
+  if (Math.abs(num) >= 1_000) {
+    return `$${(num / 1_000).toFixed(1).replace(/\.0$/, '')}k`;
+  }
+  return `$${num}`;
+}
+
