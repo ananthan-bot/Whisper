@@ -64,3 +64,21 @@ export function filterAndSortTasks(
 
   return result;
 }
+
+/**
+ * Applies quick preset filtering options for urgent, high-bounty, or nearby tasks.
+ */
+export function applyQuickPresetFilter(tasks = [], preset = 'all') {
+  if (!Array.isArray(tasks)) return [];
+  if (preset === 'urgent') {
+    return tasks.filter((t) => t.isUrgent || t.status === 'urgent');
+  }
+  if (preset === 'high_bounty') {
+    return tasks.filter((t) => (t.bounty || 0) >= 50);
+  }
+  if (preset === 'nearby') {
+    return tasks.filter((t) => t.distanceMiles !== null && t.distanceMiles !== undefined && t.distanceMiles <= 5);
+  }
+  return tasks;
+}
+
