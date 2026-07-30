@@ -74,24 +74,40 @@ The server runs at **http://localhost:5000**
 whisper/
 ├── src/
 │   ├── components/
-│   │   ├── Navbar.jsx          # Sticky nav with mode toggle & task badge
-│   │   ├── Layout.jsx          # Page wrapper with Navbar + Outlet
-│   │   ├── WhisperLogo.jsx     # Animated SVG logo
-│   │   ├── LoadingSpinner.jsx  # Reusable animated loading spinner component
-│   │   ├── StepIndicator.jsx   # Multi-step progress bar
-│   │   ├── RatingWidget.jsx    # 5-star rating component
-│   │   ├── TaskCard.jsx        # Reusable task card
-│   │   └── EmptyState.jsx      # Generic empty state UI
+│   │   ├── Navbar.jsx                  # Sticky nav with mode toggle & task badge
+│   │   ├── Layout.jsx                  # Page wrapper with Navbar + Outlet
+│   │   ├── WhisperLogo.jsx             # Animated SVG logo
+│   │   ├── LoadingSpinner.jsx          # Reusable animated loading spinner component
+│   │   ├── StepIndicator.jsx           # Multi-step progress bar
+│   │   ├── RatingWidget.jsx            # 5-star rating component
+│   │   ├── TaskCard.jsx                # Reusable task card
+│   │   ├── EmptyState.jsx              # Generic empty state UI
+│   │   ├── TaskDeadlineBadge.jsx       # Dynamic color-coded deadline badges
+│   │   ├── TextHighlight.jsx           # Search keyword match highlighter
+│   │   ├── TaskSortingMenu.jsx         # Multi-metric dashboard sorting control
+│   │   ├── AudioBookmarkButton.jsx     # Timestamp bookmarking for audio evidence
+│   │   ├── ExportTaskHistoryModal.jsx  # CSV and JSON task export modal
+│   │   ├── RatingDistributionChart.jsx # Rating score breakdown bar chart
+│   │   ├── TaskBookmarkToggle.jsx      # Bookmark toggle control for tasks
+│   │   ├── DisputeTimeline.jsx         # Escrow dispute step progress timeline
+│   │   └── KeyboardShortcutsModal.jsx  # Modal overlay listing hotkey shortcuts
 │   ├── pages/
-│   │   ├── Landing.jsx         # Hero + category cards + how it works
-│   │   ├── PostTask.jsx        # 5-step task creation wizard
-│   │   ├── HelperDashboard.jsx # Task list with filters & sorting
-│   │   └── TaskView.jsx        # Task detail + chat + proof + rating
+│   │   ├── Landing.jsx                 # Hero + category cards + how it works
+│   │   ├── PostTask.jsx                # 5-step task creation wizard
+│   │   ├── HelperDashboard.jsx         # Task list with filters & sorting
+│   │   └── TaskView.jsx                # Task detail + chat + proof + rating
 │   ├── store/
-│   │   └── useStore.js         # Zustand store (tasks, messages, ratings)
+│   │   └── useStore.js                 # Zustand store (tasks, messages, ratings)
 │   └── lib/
-│       ├── cn.js               # clsx + tailwind-merge helper
-│       └── utils.js            # formatRelativeTime, generateAlias, truncate, formatCompactCurrency
+│       ├── cn.js                       # clsx + tailwind-merge helper
+│       ├── securityHelpers.js          # Input sanitization and XSS protection
+│       ├── textHelpers.js              # Keyword search highlighting logic
+│       ├── exportHelpers.js            # Task list formatting to CSV and JSON
+│       ├── ratingHelpers.js            # Star distribution & average rating calculations
+│       ├── bookmarkHelpers.js          # Saved/bookmarked task manager
+│       ├── disputeTimelineHelpers.js   # Dispute stage and progress calculation
+│       └── utils.js                    # Relative time, deadline formatting, urgency score, aliases
+
 ├── server/
 │   ├── routes/                 # Express route handlers
 │   ├── db/                     # SQLite database
