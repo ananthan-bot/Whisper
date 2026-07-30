@@ -1,6 +1,27 @@
 import test   from 'node:test';
 import assert from 'node:assert/strict';
-import { formatRelativeTime, truncate, generateAlias, formatCompactCurrency } from './utils.js';
+import { formatRelativeTime, truncate, generateAlias, formatCompactCurrency, formatDeadlineRemaining } from './utils.js';
+
+// ─── formatDeadlineRemaining ──────────────────────────────────────────────────
+
+test('formatDeadlineRemaining — handles empty or invalid dates', () => {
+  assert.equal(formatDeadlineRemaining(null), 'No deadline');
+  assert.equal(formatDeadlineRemaining('invalid-date'), 'Invalid date');
+});
+
+test('formatDeadlineRemaining — returns Expired for past dates', () => {
+  const now = new Date('2026-07-30T12:00:00Z');
+  const past = '2026-07-30T11:00:00Z';
+  assert.equal(formatDeadlineRemaining(past, now), 'Expired');
+});
+
+test('formatDeadlineRemaining — formats minutes, hours, and days remaining', () => {
+  const now = new Date('2026-07-30T12:00:00Z');
+  assert.equal(formatDeadlineRemaining('2026-07-30T12:30:00Z', now), '30m remaining');
+  assert.equal(formatDeadlineRemaining('2026-07-30T15:00:00Z', now), '3h remaining');
+  assert.equal(formatDeadlineRemaining('2026-08-01T12:00:00Z', now), '2d remaining');
+});
+
 
 // ─── formatRelativeTime ───────────────────────────────────────────────────────
 

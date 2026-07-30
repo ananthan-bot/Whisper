@@ -52,3 +52,24 @@ export function formatCompactCurrency(amount) {
   return `$${num}`;
 }
 
+/**
+ * Formats a deadline timestamp into a remaining time string (e.g. "Expired", "45m remaining", "3h remaining", "2d remaining")
+ */
+export function formatDeadlineRemaining(deadlineIso, nowIso = null) {
+  if (!deadlineIso) return 'No deadline';
+  const deadline = new Date(deadlineIso);
+  const now = nowIso ? new Date(nowIso) : new Date();
+  const diffMs = deadline - now;
+  if (isNaN(deadline.getTime())) return 'Invalid date';
+  if (diffMs <= 0) return 'Expired';
+
+  const diffMin = Math.floor(diffMs / (1000 * 60));
+  const diffHr = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHr / 24);
+
+  if (diffMin < 60) return `${diffMin}m remaining`;
+  if (diffHr < 24) return `${diffHr}h remaining`;
+  return `${diffDay}d remaining`;
+}
+
+
