@@ -24,3 +24,15 @@ export function getNextPlaybackSpeed(currentSpeed = 1) {
   }
   return SPEED_OPTIONS[currentIndex + 1];
 }
+
+/**
+ * Formats current progress and total duration into "MM:SS / MM:SS" string
+ */
+export function formatAudioPlaybackTime(currentSeconds = 0, totalSeconds = 0) {
+  const currentFormatted = formatAudioTime(currentSeconds);
+  if (!totalSeconds || isNaN(totalSeconds) || totalSeconds <= 0) {
+    return currentFormatted;
+  }
+  return `${currentFormatted} / ${formatAudioTime(totalSeconds)}`;
+}
+
