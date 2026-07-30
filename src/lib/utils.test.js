@@ -1,6 +1,16 @@
 import test   from 'node:test';
 import assert from 'node:assert/strict';
-import { formatRelativeTime, truncate, generateAlias, formatCompactCurrency, formatDeadlineRemaining } from './utils.js';
+import { formatRelativeTime, truncate, generateAlias, formatCompactCurrency, formatDeadlineRemaining, calculateTaskUrgencyScore } from './utils.js';
+
+// ─── calculateTaskUrgencyScore ─────────────────────────────────────────────
+
+test('calculateTaskUrgencyScore — calculates scores accurately for tasks', () => {
+  assert.equal(calculateTaskUrgencyScore(null), 0);
+  assert.equal(calculateTaskUrgencyScore({ bounty: 100 }), 10);
+  assert.equal(calculateTaskUrgencyScore({ bounty: 100, isUrgent: true }), 60);
+  assert.equal(calculateTaskUrgencyScore({ bounty: 50, isUrgent: true, distanceMiles: 3 }), 75);
+});
+
 
 // ─── formatDeadlineRemaining ──────────────────────────────────────────────────
 

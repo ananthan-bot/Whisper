@@ -72,4 +72,28 @@ export function formatDeadlineRemaining(deadlineIso, nowIso = null) {
   return `${diffDay}d remaining`;
 }
 
+/**
+ * Calculates a numerical urgency score for ranking tasks based on bounty, urgency flags, and proximity.
+ */
+export function calculateTaskUrgencyScore(task = {}) {
+  if (!task || typeof task !== 'object') return 0;
+  let score = Math.min(Math.max(Number(task.bounty || 0) / 10, 0), 50);
+
+  if (task.isUrgent || task.status === 'urgent') {
+    score += 50;
+  }
+  if (task.distanceMiles !== undefined && task.distanceMiles !== null && task.distanceMiles <= 5) {
+    score += 20;
+  }
+  if (task.deadline) {
+    const diffMs = new Date(task.deadline) - new Date();
+    if (diffMs > 0 && diffMs <= 2 * 60 * 60 * 1000) {
+      score += 30;
+    }
+  }
+
+  return Math.round(score);
+}
+
+
 
