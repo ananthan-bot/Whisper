@@ -11,7 +11,8 @@ import DistanceRadiusSelect from "../components/DistanceRadiusSelect";
 import BountyRangeSlider from "../components/BountyRangeSlider";
 import StatusTabFilter from "../components/StatusTabFilter";
 import { filterAndSortTasks } from "../lib/filterHelpers";
-import { Search, Filter, SlidersHorizontal } from "lucide-react";
+import { cn } from "../lib/cn";
+import { Search, Filter, SlidersHorizontal, Inbox } from "lucide-react";
 
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest First" },
