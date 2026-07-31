@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 import { ToastContext } from './ToastContextInstance';
 
+/* eslint-disable-next-line react-refresh/only-export-components */
 export { useToast } from './useToast';
 
 export function ToastProvider({ children }) {
