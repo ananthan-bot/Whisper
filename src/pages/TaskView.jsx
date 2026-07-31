@@ -20,7 +20,7 @@ export default function TaskView() {
   const { id } = useParams();
   const {
     tasks, claimTask, messages, addMessage, viewMode, submitProof, acceptTask,
-    requestRevision, disputeTask, refundTask, ratings, addNotification
+    requestRevision, disputeTask, refundTask, addNotification
   } = useStore();
   const { addToast } = useToast();
   const task = tasks.find((t) => t.id === id);
@@ -155,7 +155,6 @@ export default function TaskView() {
 
   const category     = categories.find((c) => c.id === task.category);
   const CategoryIcon = category?.icon;
-  const alreadyRated = !!ratings?.[task.id];
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4 flex flex-col md:flex-row gap-6">
