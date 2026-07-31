@@ -13,7 +13,7 @@ router.post('/', auth, async (req, res) => {
   try {
     const result = await createRating(task_id, helper_id, rating, review);
     res.json(result.rows[0]);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -22,7 +22,7 @@ router.get('/helper/:helperId', async (req, res) => {
   try {
     const result = await getHelperRatingSummary(req.params.helperId);
     res.json(result.rows[0]);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
