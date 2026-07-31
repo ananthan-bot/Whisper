@@ -30,7 +30,7 @@ export default function ProofGallery({ proofs = [], taskTitle = 'Task Completion
         <div className="flex items-center gap-2">
           <Camera className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           <h4 className="font-semibold text-slate-800 dark:text-slate-200 text-sm">
-            Proof of Work & Media Gallery
+            Proof of Work & Media Gallery for {taskTitle}
           </h4>
         </div>
         <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
