@@ -30,7 +30,7 @@ export default function PostTask() {
     try {
       await addTask(formData);
       navigate("/helper");
-    } catch (err) {
+    } catch {
       alert("Failed to post task. Are you logged in?");
     } finally {
       setLoading(false);
