@@ -6,7 +6,7 @@ router.get('/:taskId', auth, async (req, res) => {
   try {
     const result = await getMessagesByTaskId(req.params.taskId);
     res.json(result.rows);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -19,7 +19,7 @@ router.post('/', auth, async (req, res) => {
   try {
     const result = await createMessage(task_id, req.user.id, sender_role, text);
     res.json(result.rows[0]);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
