@@ -23,7 +23,7 @@ router.post('/signup', async (req, res) => {
     const user = result.rows[0];
     const token = jwt.sign({ id: user.id, alias: user.alias }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.json({ token, user });
-  } catch (err) {
+  } catch {
     res.status(400).json({ error: 'Email or alias already exists' });
   }
 });
@@ -47,7 +47,7 @@ router.post('/login', async (req, res) => {
     if (!valid) return res.status(400).json({ error: 'Invalid password' });
     const token = jwt.sign({ id: user.id, alias: user.alias }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.json({ token, user: { id: user.id, email: user.email, alias: user.alias } });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
