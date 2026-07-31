@@ -260,6 +260,9 @@ node --test server/tests/auth.test.js server/tests/routes/auth.test.js server/te
 | `routes/ratings.test.js`      | 11    |
 | **Total**                     | **107** |
 
+- **🎙️ Web Audio STT & Synthesizer** — live speech-to-text transcript generator, HTML5 Canvas audio waveform visualizer, and Web Audio API synthesized UI sound effects
+- **🔔 Real-Time Notification Center** — header bell dropdown with unread counts and task updates
+
 ---
 
 ## 🗃️ Database Schema
