@@ -61,14 +61,14 @@ export function createSpeechRecognizer({ onResult, onError, onEnd, lang = 'en-US
     stop: () => {
       try {
         recognition.stop();
-      } catch (err) {
+      } catch {
         // Ignore if stopped already
       }
     },
     abort: () => {
       try {
         recognition.abort();
-      } catch (err) {
+      } catch {
         // Ignore abort errors
       }
     },
