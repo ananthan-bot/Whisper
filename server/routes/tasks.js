@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
   try {
     const result = await getAllTasks();
     res.json(result.rows);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -26,7 +26,7 @@ router.get('/:id', async (req, res) => {
     const result = await findTaskById(req.params.id);
     if (!result.rows[0]) return res.status(404).json({ error: 'Task not found' });
     res.json(result.rows[0]);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -48,7 +48,7 @@ router.post('/', auth, async (req, res) => {
   try {
     const result = await createTask(id, req.user.id, category, description, script, proof_type || 'screenshot', alias);
     res.json(result.rows[0]);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -62,7 +62,7 @@ router.patch('/:id/claim', auth, async (req, res) => {
     }
     const result = await claimTask(req.params.id, req.user.id);
     res.json(result.rows[0]);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -81,7 +81,7 @@ router.patch('/:id/proof', auth, async (req, res) => {
     }
     const result = await submitProof(req.params.id, proofString);
     res.json(result.rows[0]);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -95,7 +95,7 @@ router.patch('/:id/accept', auth, async (req, res) => {
     }
     const result = await acceptTask(req.params.id);
     res.json(result.rows[0]);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });
