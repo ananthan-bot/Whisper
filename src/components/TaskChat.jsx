@@ -50,7 +50,7 @@ export default function TaskChat({
           <h3 className="font-semibold text-sm text-slate-800">Anonymous Task Chat</h3>
         </div>
         <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 font-medium border border-teal-200">
-          Chatting as {senderRole === 'requester' ? 'Poster' : 'Helper'}
+          Chatting as {senderRole === 'requester' ? 'Poster' : 'Helper'} ({userAlias})
         </span>
       </div>
 
