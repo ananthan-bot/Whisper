@@ -14,9 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', service: 'whisper-backend', timestamp: new Date().toISOString() });
-});
+app.use('/api/health', require('./routes/health'));
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/tasks', require('./routes/tasks'));
