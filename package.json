@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node --test \"src/lib/*.test.js\""
+    "test": "node --test \"src/**/*.test.js\" \"server/**/*.test.js\""
   },
   "dependencies": {
     "axios": "^1.18.1",

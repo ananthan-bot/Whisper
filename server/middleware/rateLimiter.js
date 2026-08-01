@@ -3,11 +3,11 @@
  * @param {number} maxRequests
  * @param {number} windowMs
  */
-export function createRateLimiter(maxRequests = 100, windowMs = 60000) {
+function createRateLimiter(maxRequests = 100, windowMs = 60000) {
   const requests = new Map();
 
   return (req, res, next) => {
-    const ip = req.ip || req.headers['x-forwarded-for'] || '127.0.0.1';
+    const ip = req.ip || (req.headers && req.headers['x-forwarded-for']) || '127.0.0.1';
     const now = Date.now();
     
     if (!requests.has(ip)) {
@@ -32,3 +32,5 @@ export function createRateLimiter(maxRequests = 100, windowMs = 60000) {
     return true;
   };
 }
+
+module.exports = { createRateLimiter };

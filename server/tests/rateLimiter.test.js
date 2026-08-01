@@ -1,6 +1,6 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import { createRateLimiter } from '../middleware/rateLimiter.js';
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { createRateLimiter } = require('../middleware/rateLimiter.js');
 
 test('createRateLimiter - allows requests under limit', () => {
   const limiter = createRateLimiter(2, 1000);
