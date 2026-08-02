@@ -11,6 +11,11 @@ Whisper is a community platform where anyone can post tasks that require phone c
 
 - **100% Anonymous** — no real names, emails, or phone numbers ever shared
 - **4 Task Categories** — Negotiator, Secretary, Researcher, Wordsmith
+- **⭐ Task Bookmarking & Favorites** — toggle bookmarking, favorite button, and saved tasks list
+- **🏷️ Tagging & Color Badge System** — hashtag parsing, color-coded badge pills, and tag filtering
+- **🔥 Daily Activity Streak Counter** — daily streak calculation, active status badge, and streak formatting
+- **⏱️ Time Estimation Utilities** — automatic task duration calculation and compact UI indicator chips
+- **🔍 Search Query History** — client-side search history dropdown with quick-select and clear operations
 - **🎙️ Web Speech STT & Audio Waveform** — live speech-to-text transcript generation and HTML5 Canvas audio waveform visualizer
 - **🔔 Real-Time Notification Center** — header bell dropdown with unread counts and task updates
 - **👤 User Reputation & Badges** — level tiers (*Rookie, Bronze, Silver, Gold, Platinum*) and achievement badges

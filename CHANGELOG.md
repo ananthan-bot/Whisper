@@ -2,6 +2,21 @@
 
 All notable changes to the Whisper project will be documented in this file.
 
+## [1.2.0] - 2026-08-02
+
+### Added
+- **Task Bookmark Helpers**: Functions for toggling, checking, and filtering bookmarked task IDs (`bookmarkToggleHelpers.js`).
+- **TaskBookmarkButton Component**: Interactive star button component for saving favorite tasks (`TaskBookmarkButton.jsx`).
+- **Tag Helpers**: Utilities for extracting hashtags, generating color palette classes, and filtering tasks (`tagHelpers.js`).
+- **TagBadgeList Component**: Visual pill list component for task tags with optional click handlers (`TagBadgeList.jsx`).
+- **Activity Streak Calculator**: Consecutive daily streak counter and active status checker (`streakHelpers.js`).
+- **StreakBadge Component**: Flame icon streak widget component (`StreakBadge.jsx`).
+- **Task Time Estimate Helpers**: Duration calculator and human-readable time formatter (`taskTimeEstimateHelpers.js`).
+- **TimeEstimateChip Component**: Compact time estimate badge component (`TimeEstimateChip.jsx`).
+- **Search History Manager**: Client-side search history manager with deduplication and filtering (`searchHistoryHelpers.js`).
+- **RecentSearchesDropdown Component**: Search bar dropdown list with quick select and delete items (`RecentSearchesDropdown.jsx`).
+- **Server Diagnostic Ping Helper**: Uptime and memory usage reporter for server status diagnostics (`server/pingHelpers.js`).
+
 ## [1.1.0] - 2026-08-01
 
 ### Added
