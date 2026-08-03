@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useStore } from '../store/useStore';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/cn';
+import { User, LogOut } from 'lucide-react';
 import WhisperLogo from './WhisperLogo';
 import NotificationCenter from './NotificationCenter';
 import UserProfileModal from './UserProfileModal';

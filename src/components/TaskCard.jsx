@@ -5,6 +5,7 @@ import { cn } from '../lib/cn';
 import { formatRelativeTime } from '../lib/utils';
 import { categories } from '../lib/categories';
 import UrgentTaskBadge from './UrgentTaskBadge';
+import LocationBadge from './LocationBadge';
 
 const STATUS_STYLES = {
   open:      { dot: 'bg-slate-400',    badge: 'bg-slate-100 text-slate-600 border-slate-200',  label: 'Open' },
