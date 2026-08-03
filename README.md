@@ -59,6 +59,36 @@ npm test       # Runs full node unit test suite
 
 The frontend runs at **http://localhost:5173**
 
+---
+
+## 🌐 Deployment (Vercel)
+
+Whisper is pre-configured for instant deployment on **Vercel**.
+
+### Standard Vercel CLI Deployment
+
+```bash
+# Install Vercel CLI globally (if not already installed)
+npm i -g vercel
+
+# Deploy to preview
+vercel
+
+# Deploy to production
+vercel --prod
+```
+
+### GitHub Integration Deployment
+
+1. Push this repository to GitHub.
+2. Log into your [Vercel Dashboard](https://vercel.com).
+3. Click **"New Project"** and select your GitHub repository.
+4. Vercel automatically detects Vite:
+   - **Framework Preset**: `Vite`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+5. Click **Deploy**. Single page routing rewrites are handled automatically via `vercel.json`.
+
 
 ### Backend (optional — for real-time chat)
 
